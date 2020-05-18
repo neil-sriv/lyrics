@@ -151,6 +151,8 @@ export default class Auth {
 					headers: { Authorization: 'Bearer ' + trimmedToken },
 				}
 			);
+			console.log(Object.keys(response))
+			console.log(response.status)
 			if (response.status == 204) {
 				return {response: 'success'};
 			}
@@ -170,6 +172,8 @@ export default class Auth {
 					headers: { Authorization: 'Bearer ' + trimmedToken },
 				}
 			);
+			console.log(Object.keys(response))
+			console.log(response.status)
 			if (response.status == 204) {
 				return {response: 'success'};
 			}

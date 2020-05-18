@@ -24,13 +24,13 @@ export default class App extends React.Component {
 		this.state = {
 			accessTokenAvailable: false,
 			getPlaying: false,
+			paused: false,
 			nowPlaying: '',
 		};
 		this.auth = new Auth();
 	}
 
-	componentDidMount() {
-	}
+	componentDidMount() {}
 
 	login = async () => {
 		const tokenExpirationTime = await this.auth.getUserData('expirationTime');
@@ -55,11 +55,18 @@ export default class App extends React.Component {
 	};
 
 	getNowPlaying = async () => {
+		const tokenExpirationTime = await this.auth.getUserData('expirationTime');
+		if (!tokenExpirationTime || (new Date().getTime()).toString() > tokenExpirationTime) {
+			// access token has expired, so we need to use the refresh token
+			await this.auth.useRefreshToken();
+		}
+		this.setState({ accessTokenAvailable: true });
 		const playback = await this.auth.playbackState();
 		if (!playback) {
 			return Alert.alert('Spotify not playing');
 		}
 		const art = playback.item.album.images[0].url;
+		const previous_song = this.state.nowPlaying.song_title;
 		this.setState({
 			getPlaying: true,
 			nowPlaying: {
@@ -69,12 +76,24 @@ export default class App extends React.Component {
 				duration: playback.item.duration_ms,
 				progress: playback.progress_ms,
 			},
+			paused: !playback.is_playing
 		});
-		this.getLyrics();
-		const seconds = this.state.nowPlaying.duration - this.state.nowPlaying.progress
-		setTimeout(function(){
-			this.refresh();
-		}.bind(this), seconds+1000);
+		if (previous_song != this.state.nowPlaying.song_title) {
+			this.getLyrics();
+		}
+		const seconds =
+			this.state.nowPlaying.duration - this.state.nowPlaying.progress;
+		if (!this.state.paused && seconds>0) {
+			// console.log('calling timeout ' + (seconds/1000))
+			// console.log(this.state.paused)
+			setTimeout(
+				function () {
+					// console.log('i think it is end of song')
+					this.refresh();
+				}.bind(this),
+				seconds + 1000
+			);
+		}
 	};
 
 	refresh = async () => {
@@ -122,7 +141,21 @@ export default class App extends React.Component {
 				},
 			});
 			const responseJson = await searchResponse.json();
-			const lyrics_path = responseJson.response.hits[0].result.path;
+			if (responseJson.response.hits.length == 0) {
+				this.setState({
+					lyrics: 'No Lyrics Found',
+				});
+				return;
+			}
+			var lyrics_path = responseJson.response.hits[0].result.path;
+			var i = 0;
+			while (
+				lyrics_path.indexOf('lyrics') == -1 &&
+				responseJson.response.hits.length > i
+			) {
+				i += 1;
+				lyrics_path = responseJson.response.hits[i].result.path;
+			}
 			if (
 				lyrics_path &&
 				responseJson.response.hits[0].result.lyrics_state == 'complete'
@@ -138,6 +171,7 @@ export default class App extends React.Component {
 				var html = await lyricsResponse.text();
 				const $ = cheerio.load(html);
 				const l = $('.lyrics');
+				console.log(lyrics_url);
 				this.setState({
 					lyrics: l.text().trim(),
 				});
@@ -151,11 +185,17 @@ export default class App extends React.Component {
 
 	pause = async () => {
 		await this.auth.pause();
+		this.setState({
+			pause: true,
+		});
 		this.refresh();
 	};
 
 	play = async () => {
 		await this.auth.play();
+		this.setState({
+			pause: false,
+		});
 		this.refresh();
 	};
 
@@ -202,7 +242,9 @@ export default class App extends React.Component {
 							ref={(ref) => {
 								this.scrollView = ref;
 							}}
-							onContentSizeChange={() => this.scrollView.scrollTo({x:0, y:0, animated: true})}
+							onContentSizeChange={() =>
+								this.scrollView.scrollTo({ x: 0, y: 0, animated: true })
+							}
 						>
 							<Text
 								style={{
@@ -260,9 +302,10 @@ const styles = StyleSheet.create({
 	},
 	scrollView: {
 		backgroundColor: 'black',
-		marginHorizontal: 20,
+		marginHorizontal: 10,
 		marginVertical: 10,
-		height: 200,
+		height: 250,
+		alignSelf: 'stretch',
 	},
 	imageContainer: {
 		backgroundColor: 'white',
