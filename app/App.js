@@ -29,6 +29,9 @@ export default class App extends React.Component {
 		this.auth = new Auth();
 	}
 
+	componentDidMount() {
+	}
+
 	login = async () => {
 		const tokenExpirationTime = await this.auth.getUserData('expirationTime');
 		if (!tokenExpirationTime || new Date().getTime() > tokenExpirationTime) {
@@ -63,9 +66,15 @@ export default class App extends React.Component {
 				album_art: art,
 				song_title: playback.item.name,
 				artist: playback.item.artists[0].name,
+				duration: playback.item.duration_ms,
+				progress: playback.progress_ms,
 			},
 		});
 		this.getLyrics();
+		const seconds = this.state.nowPlaying.duration - this.state.nowPlaying.progress
+		setTimeout(function(){
+			this.refresh();
+		}.bind(this), seconds+1000);
 	};
 
 	refresh = async () => {
@@ -127,10 +136,10 @@ export default class App extends React.Component {
 				});
 				// lyricsResponseJson = await lyricsResponse.json();
 				var html = await lyricsResponse.text();
-				const $ = cheerio.load(html)
+				const $ = cheerio.load(html);
 				const l = $('.lyrics');
 				this.setState({
-					lyrics: l.text()
+					lyrics: l.text().trim(),
 				});
 				// html = html.substring(html.indexOf('VERSE'), html.indexOf('VERSE')+1000)
 				// console.log(html)
@@ -138,6 +147,26 @@ export default class App extends React.Component {
 		} catch (err) {
 			console.error(err);
 		}
+	};
+
+	pause = async () => {
+		await this.auth.pause();
+		this.refresh();
+	};
+
+	play = async () => {
+		await this.auth.play();
+		this.refresh();
+	};
+
+	next = async () => {
+		await this.auth.next();
+		this.refresh();
+	};
+
+	previous = async () => {
+		await this.auth.previous();
+		this.refresh();
 	};
 
 	render() {
@@ -168,7 +197,13 @@ export default class App extends React.Component {
 							this.state.nowPlaying.artist}
 					</Text>
 					<SafeAreaView style={styles.scrollView}>
-						<ScrollView style={styles.scrollView}>
+						<ScrollView
+							style={styles.scrollView}
+							ref={(ref) => {
+								this.scrollView = ref;
+							}}
+							onContentSizeChange={() => this.scrollView.scrollTo({x:0, y:0, animated: true})}
+						>
 							<Text
 								style={{
 									color: '#ffa',
@@ -179,6 +214,28 @@ export default class App extends React.Component {
 							</Text>
 						</ScrollView>
 					</SafeAreaView>
+					<View style={styles.row}>
+						<Button
+							buttonStyle={styles.playbackButton}
+							title="Previous"
+							onPress={this.previous}
+						/>
+						<Button
+							buttonStyle={styles.playbackButton}
+							title="Pause"
+							onPress={this.pause}
+						/>
+						<Button
+							buttonStyle={styles.playbackButton}
+							title="Play"
+							onPress={this.play}
+						/>
+						<Button
+							buttonStyle={styles.playbackButton}
+							title="Next"
+							onPress={this.next}
+						/>
+					</View>
 				</View>
 			)
 		) : (
@@ -196,11 +253,16 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
+	row: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		backgroundColor: 'white',
+	},
 	scrollView: {
 		backgroundColor: 'black',
 		marginHorizontal: 20,
 		marginVertical: 10,
-		height: 300,
+		height: 200,
 	},
 	imageContainer: {
 		backgroundColor: 'white',
@@ -208,5 +270,8 @@ const styles = StyleSheet.create({
 		width: 300,
 		alignItems: 'center',
 		justifyContent: 'center',
+	},
+	playbackButton: {
+		color: 'green',
 	},
 });

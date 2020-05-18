@@ -34,7 +34,6 @@ export default class Auth {
 		// );
 		try {
 			const redirectUrl = AuthSession.getRedirectUrl();
-			console.log(redirectUrl);
 			const result = await AuthSession.startAsync({
 				authUrl:
 					'https://accounts.spotify.com/authorize' +
