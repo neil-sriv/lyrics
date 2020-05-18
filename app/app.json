@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "lyrics",
-    "slug": "lyrics",
+    "name": "SpotifyLyrics",
+    "slug": "SpotifyLyrics",
+    "privacy": "public",
     "platforms": [
       "ios",
       "android",
@@ -22,7 +23,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    }
+      "supportsTablet": true,
+      "bundleIdentifier": "com.neilsriv.spotifylyrics"
+    },
+    "scheme": "mycoolredirect"
   }
 }

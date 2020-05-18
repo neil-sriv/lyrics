@@ -1,14 +1,17 @@
-node_modules/**/*
-.expo/*
-npm-debug.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-*.orig.*
-web-build/
-web-report/
+app/node_modules/**/*
+app/.expo/*
+app/npm-debug.*
+app/*.jks
+app/*.p8
+app/*.p12
+app/*.key
+app/*.mobileprovision
+app/*.orig.*
+app/web-build/
+app/web-report/
 
 # macOS
 .DS_Store
+
+# app logos
+stonks/
