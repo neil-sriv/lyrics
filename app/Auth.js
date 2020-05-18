@@ -34,7 +34,7 @@ export default class Auth {
 		// );
 		try {
 			const redirectUrl = AuthSession.getRedirectUrl();
-			console.log(redirectUrl)
+			console.log(redirectUrl);
 			const result = await AuthSession.startAsync({
 				authUrl:
 					'https://accounts.spotify.com/authorize' +
@@ -125,21 +125,98 @@ export default class Auth {
 	async playbackState() {
 		try {
 			var accessToken = await this.getUserData('accessToken');
-			const pls = accessToken.substring(1, accessToken.length - 1);
+			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
 			const response = await fetch('https://api.spotify.com/v1/me/player', {
 				method: 'GET',
 				headers: {
-					Authorization: 'Bearer ' + pls,
+					Authorization: 'Bearer ' + trimmedToken,
 				},
 			});
 			if (response.status == 200) {
 				const responseJson = await response.json();
 				return responseJson;
-			} 
+			}
 		} catch (err) {
 			console.error(err);
 		}
 	}
+
+	async pause() {
+		try {
+			var accessToken = await this.getUserData('accessToken');
+			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
+			const response = await fetch(
+				'https://api.spotify.com/v1/me/player/pause',
+				{
+					method: 'PUT',
+					headers: { Authorization: 'Bearer ' + trimmedToken },
+				}
+			);
+			if (response.status == 204) {
+				return {response: 'success'};
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	async play() {
+		try {
+			var accessToken = await this.getUserData('accessToken');
+			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
+			const response = await fetch(
+				'https://api.spotify.com/v1/me/player/play',
+				{
+					method: 'PUT',
+					headers: { Authorization: 'Bearer ' + trimmedToken },
+				}
+			);
+			if (response.status == 204) {
+				return {response: 'success'};
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	async next() {
+		try {
+			var accessToken = await this.getUserData('accessToken');
+			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
+			const response = await fetch(
+				'https://api.spotify.com/v1/me/player/next',
+				{
+					method: 'POST',
+					headers: { Authorization: 'Bearer ' + trimmedToken },
+				}
+			);
+			if (response.status == 204) {
+				return {response: 'success'};
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	async previous() {
+		try {
+			var accessToken = await this.getUserData('accessToken');
+			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
+			const response = await fetch(
+				'https://api.spotify.com/v1/me/player/previous',
+				{
+					method: 'POST',
+					headers: { Authorization: 'Bearer ' + trimmedToken },
+				}
+			);
+			if (response.status == 204) {
+				return {response: 'success'};
+			}
+		} catch (err) {
+			console.error(err);
+		}
+}
 
 	async setUserData(key, data) {
 		try {
