@@ -42,7 +42,8 @@ export default class Auth {
 					spotifyCredentials.clientId +
 					(this._scopes ? '&scope=' + encodeURIComponent(this._scopes) : '') +
 					'&redirect_uri=' +
-					encodeURIComponent(redirectUrl),
+					encodeURIComponent(redirectUrl) + 
+					'&show_dialog=true',
 				// 			authUrl: `https://accounts.spotify.com/authorize?response_type=code&client_id=${spotifyCredentials.client_id}
 				// &redirect_uri=${encodeURIComponent(redirectUrl)}
 				// &scope=${encodeURIComponent('user-read-email&response_type=token')}`,
@@ -100,8 +101,10 @@ export default class Auth {
 			});
 			const responseJson = await response.json();
 			if (responseJson.error) {
+				console.log('refresh token failed')
 				await this.storeTokens();
 			} else {
+				console.log('refresh token succeeded')
 				const {
 					access_token: newAccessToken,
 					refresh_token: newRefreshToken,

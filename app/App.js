@@ -133,7 +133,7 @@ export default class App extends React.Component {
 			if (!responseJson.result) {
 				this.geniusLyrics();
 			} else {
-				console.log(url.substring(0, url.indexOf('?')))
+				console.log(url.substring(0, url.indexOf('?')));
 				this.setState({
 					lyrics: responseJson.result.track.text,
 				});
@@ -231,6 +231,7 @@ export default class App extends React.Component {
 		return this.state.accessTokenAvailable ? (
 			!this.state.getPlaying ? (
 				<View style={styles.container}>
+					<Button title="Log out" style={{}} onPress={this.logout} />
 					<FontAwesome name="spotify" color="#2FD566" size={128} />
 					<Button title="Get Now Playing" onPress={this.getNowPlaying} />
 				</View>
