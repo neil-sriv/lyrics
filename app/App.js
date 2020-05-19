@@ -41,6 +41,16 @@ export default class App extends React.Component {
 		}
 	};
 
+	logout = async () => {
+		await this.auth.setUserData('accessToken', '');
+		await this.auth.setUserData('refreshToken', '');
+		await this.auth.setUserData('expirationTime', '');
+		this.setState({
+			accessTokenAvailable: false,
+			getPlaying: false
+		})
+	};
+
 	getValidSPObj = async () => {
 		const tokenExpirationTime = await this.auth.getUserData('expirationTime');
 		if (!tokenExpirationTime || new Date().getTime() > tokenExpirationTime) {
@@ -56,7 +66,10 @@ export default class App extends React.Component {
 
 	getNowPlaying = async () => {
 		const tokenExpirationTime = await this.auth.getUserData('expirationTime');
-		if (!tokenExpirationTime || (new Date().getTime()).toString() > tokenExpirationTime) {
+		if (
+			!tokenExpirationTime ||
+			new Date().getTime().toString() > tokenExpirationTime
+		) {
 			// access token has expired, so we need to use the refresh token
 			await this.auth.useRefreshToken();
 		}
@@ -76,14 +89,14 @@ export default class App extends React.Component {
 				duration: playback.item.duration_ms,
 				progress: playback.progress_ms,
 			},
-			paused: !playback.is_playing
+			paused: !playback.is_playing,
 		});
 		if (previous_song != this.state.nowPlaying.song_title) {
 			this.getLyrics();
 		}
 		const seconds =
 			this.state.nowPlaying.duration - this.state.nowPlaying.progress;
-		if (!this.state.paused && seconds>0) {
+		if (!this.state.paused && seconds > 0) {
 			// console.log('calling timeout ' + (seconds/1000))
 			// console.log(this.state.paused)
 			setTimeout(
@@ -218,6 +231,9 @@ export default class App extends React.Component {
 				</View>
 			) : (
 				<View style={styles.container}>
+					<View style={{}}>
+						<Button title="Log out" style={{}} onPress={this.logout} />
+					</View>
 					<View style={styles.imageContainer}>
 						<Image
 							source={{ uri: this.state.nowPlaying.album_art }}
@@ -294,6 +310,8 @@ const styles = StyleSheet.create({
 		backgroundColor: 'black',
 		alignItems: 'center',
 		justifyContent: 'center',
+		paddingBottom: Platform.OS == 'ios' ? 20 : 0,
+		paddingTop: Platform.OS == 'ios' ? 20 : 0,
 	},
 	row: {
 		flexDirection: 'row',

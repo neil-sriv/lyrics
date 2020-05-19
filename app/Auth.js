@@ -75,7 +75,6 @@ export default class Auth {
 				expires_in: expiresIn,
 			} = responseJson;
 			const expirationTime = new Date().getTime() + expiresIn * 1000;
-			await this.setUserData('test', 'test');
 			await this.setUserData('accessToken', accessToken);
 			await this.setUserData('refreshToken', refreshToken);
 			await this.setUserData('expirationTime', expirationTime);
