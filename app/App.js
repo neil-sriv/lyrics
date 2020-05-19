@@ -34,8 +34,12 @@ export default class App extends React.Component {
 
 	login = async () => {
 		const tokenExpirationTime = await this.auth.getUserData('expirationTime');
-		if (!tokenExpirationTime || new Date().getTime() > tokenExpirationTime) {
+		if (
+			!tokenExpirationTime ||
+			new Date().getTime().toString() > tokenExpirationTime
+		) {
 			await this.auth.useRefreshToken();
+			this.setState({ accessTokenAvailable: true });
 		} else {
 			this.setState({ accessTokenAvailable: true });
 		}
@@ -47,8 +51,8 @@ export default class App extends React.Component {
 		await this.auth.setUserData('expirationTime', '');
 		this.setState({
 			accessTokenAvailable: false,
-			getPlaying: false
-		})
+			getPlaying: false,
+		});
 	};
 
 	getValidSPObj = async () => {
@@ -129,6 +133,7 @@ export default class App extends React.Component {
 			if (!responseJson.result) {
 				this.geniusLyrics();
 			} else {
+				console.log(url.substring(0, url.indexOf('?')))
 				this.setState({
 					lyrics: responseJson.result.track.text,
 				});
