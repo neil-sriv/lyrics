@@ -14,6 +14,7 @@ Download Expo on your phone and make sure you have yarn installed on your comput
  - Better log in procedure
  - Playlist support (choose a playlist to play)
  - Shuffle, repeat toggle support
+ - Start playing music from app
 
 ### Known Bugs
  - Canceling out of AuthSession crashes app

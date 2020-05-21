@@ -1,5 +1,4 @@
 import React from 'react';
-import * as AuthSession from 'expo-auth-session';
 import {
 	StyleSheet,
 	Text,
@@ -13,9 +12,9 @@ import {
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import Auth from './Auth';
-import { AsyncStorage } from 'react-native';
 import SpotifyWebAPI from 'spotify-web-api-js';
 import cheerio from 'react-native-cheerio';
+import VerticalSlider from 'rn-vertical-slider';
 
 export default class App extends React.Component {
 	constructor(props) {
@@ -26,6 +25,7 @@ export default class App extends React.Component {
 			getPlaying: false,
 			paused: false,
 			nowPlaying: '',
+			style: { backgroundColor: 'rgb(205, 150, 200)' },
 		};
 		this.auth = new Auth();
 	}
@@ -236,17 +236,119 @@ export default class App extends React.Component {
 					<Button title="Get Now Playing" onPress={this.getNowPlaying} />
 				</View>
 			) : (
-				<View style={styles.container}>
+				<View
+					style={{
+						flex: 1,
+						backgroundColor: this.state.style.backgroundColor,
+						alignItems: 'center',
+						justifyContent: 'center',
+						paddingBottom: Platform.OS == 'ios' ? 20 : 0,
+						paddingTop: Platform.OS == 'ios' ? 20 : 0,
+					}}
+				>
 					<View style={{}}>
 						<Button title="Log out" style={{}} onPress={this.logout} />
 					</View>
-					<View style={styles.imageContainer}>
-						<Image
-							source={{ uri: this.state.nowPlaying.album_art }}
-							style={{ height: 300, width: 300 }}
-						/>
+					<View
+						style={{
+							flexDirection: 'row',
+							alignItems: 'center',
+							backgroundColor: this.state.style.backgroundColor,
+						}}
+					>
+						<View style={styles.imageContainer}>
+							<Image
+								source={{ uri: this.state.nowPlaying.album_art }}
+								style={{ height: 300, width: 300 }}
+							/>
+						</View>
+						<View
+							style={{
+								paddingHorizontal: 10,
+								backgroundColor: this.state.style.backgroundColor,
+							}}
+						>
+							<VerticalSlider
+								value={50}
+								disabled={false}
+								min={0}
+								max={100}
+								onChange={(value) => {
+									// console.log('CHANGE', value);
+									// console.log(this.state.style.backgroundColor)
+									this.setState({
+										style: {
+											backgroundColor: `rgb(${Math.abs(
+												value - 255
+											)}, ${Math.abs(value + 100)}, ${Math.abs(
+												value * 2 + 100
+											)})`,
+										},
+									});
+								}}
+								onComplete={(value) => {
+									// console.log('COMPLETE', value);
+								}}
+								width={30}
+								height={200}
+								step={1}
+								borderRadius={25}
+								minimumTrackTintColor={'gray'}
+								maximumTrackTintColor={'tomato'}
+							/>
+						</View>
 					</View>
 					<Button type="primary" title="Refresh" onPress={this.refresh} />
+					<View
+						style={{
+							flexDirection: 'row',
+							alignItems: 'center',
+							backgroundColor: this.state.style.backgroundColor,
+						}}
+					>
+						<TouchableOpacity
+							style={styles.playbackButton}
+							onPress={this.previous}
+						>
+							<Text
+								style={{
+									color: this.state.style.backgroundColor,
+								}}
+							>
+								Previous
+							</Text>
+						</TouchableOpacity>
+						<TouchableOpacity
+							style={styles.playbackButton}
+							onPress={this.pause}
+						>
+							<Text
+								style={{
+									color: this.state.style.backgroundColor,
+								}}
+							>
+								Pause
+							</Text>
+						</TouchableOpacity>
+						<TouchableOpacity style={styles.playbackButton} onPress={this.play}>
+							<Text
+								style={{
+									color: this.state.style.backgroundColor,
+								}}
+							>
+								Play
+							</Text>
+						</TouchableOpacity>
+						<TouchableOpacity style={styles.playbackButton} onPress={this.next}>
+							<Text
+								style={{
+									color: this.state.style.backgroundColor,
+								}}
+							>
+								Next
+							</Text>
+						</TouchableOpacity>
+					</View>
 					<Text
 						style={{
 							backgroundColor: 'black',
@@ -278,28 +380,6 @@ export default class App extends React.Component {
 							</Text>
 						</ScrollView>
 					</SafeAreaView>
-					<View style={styles.row}>
-						<Button
-							buttonStyle={styles.playbackButton}
-							title="Previous"
-							onPress={this.previous}
-						/>
-						<Button
-							buttonStyle={styles.playbackButton}
-							title="Pause"
-							onPress={this.pause}
-						/>
-						<Button
-							buttonStyle={styles.playbackButton}
-							title="Play"
-							onPress={this.play}
-						/>
-						<Button
-							buttonStyle={styles.playbackButton}
-							title="Next"
-							onPress={this.next}
-						/>
-					</View>
 				</View>
 			)
 		) : (
@@ -322,7 +402,7 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		backgroundColor: 'white',
+		backgroundColor: 'black',
 	},
 	scrollView: {
 		backgroundColor: 'black',
@@ -332,13 +412,15 @@ const styles = StyleSheet.create({
 		alignSelf: 'stretch',
 	},
 	imageContainer: {
-		backgroundColor: 'white',
+		backgroundColor: 'black',
 		height: 300,
 		width: 300,
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
 	playbackButton: {
-		color: 'green',
+		alignItems: 'center',
+		backgroundColor: 'black',
+		padding: 10,
 	},
 });
