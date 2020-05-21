@@ -240,19 +240,36 @@ export default class App extends React.Component {
 					style={{
 						flex: 1,
 						backgroundColor: this.state.style.backgroundColor,
-						alignItems: 'center',
-						justifyContent: 'center',
-						paddingBottom: Platform.OS == 'ios' ? 20 : 0,
-						paddingTop: Platform.OS == 'ios' ? 20 : 0,
+						// alignItems: 'center',
+						// justifyContent: 'center',
+						paddingTop: Platform.OS == 'ios' ? 40 : 0,
 					}}
 				>
-					<View style={{}}>
-						<Button title="Log out" style={{}} onPress={this.logout} />
+					<View
+						style={{
+							alignItems: 'flex-end',
+							textAlign: 'flex-end',
+							justifyContent: 'flex-end',
+						}}
+					>
+						<TouchableOpacity
+							style={styles.playbackButton}
+							onPress={this.logout}
+						>
+							<Text
+								style={{
+									color: this.state.style.backgroundColor,
+								}}
+							>
+								Log Out
+							</Text>
+						</TouchableOpacity>
 					</View>
 					<View
 						style={{
 							flexDirection: 'row',
 							alignItems: 'center',
+							justifyContent: 'center',
 							backgroundColor: this.state.style.backgroundColor,
 						}}
 					>
@@ -269,6 +286,9 @@ export default class App extends React.Component {
 							}}
 						>
 							<VerticalSlider
+								style={{
+									display: 'none',
+								}}
 								value={50}
 								disabled={false}
 								min={0}
@@ -292,9 +312,10 @@ export default class App extends React.Component {
 								width={30}
 								height={200}
 								step={1}
-								borderRadius={25}
-								minimumTrackTintColor={'gray'}
-								maximumTrackTintColor={'tomato'}
+								borderRadius={100}
+								borderColor={'red'}
+								minimumTrackTintColor={'rgb(255, 100, 100)'}
+								maximumTrackTintColor={'rgb(155, 200, 300)'}
 							/>
 						</View>
 					</View>
@@ -303,7 +324,9 @@ export default class App extends React.Component {
 						style={{
 							flexDirection: 'row',
 							alignItems: 'center',
+							justifyContent: 'center',
 							backgroundColor: this.state.style.backgroundColor,
+							paddingBottom: 10,
 						}}
 					>
 						<TouchableOpacity
@@ -313,6 +336,7 @@ export default class App extends React.Component {
 							<Text
 								style={{
 									color: this.state.style.backgroundColor,
+									fontSize: 16,
 								}}
 							>
 								Previous
@@ -325,6 +349,7 @@ export default class App extends React.Component {
 							<Text
 								style={{
 									color: this.state.style.backgroundColor,
+									fontSize: 16,
 								}}
 							>
 								Pause
@@ -334,6 +359,7 @@ export default class App extends React.Component {
 							<Text
 								style={{
 									color: this.state.style.backgroundColor,
+									fontSize: 16,
 								}}
 							>
 								Play
@@ -343,23 +369,27 @@ export default class App extends React.Component {
 							<Text
 								style={{
 									color: this.state.style.backgroundColor,
+									fontSize: 16,
 								}}
 							>
 								Next
 							</Text>
 						</TouchableOpacity>
 					</View>
-					<Text
-						style={{
-							backgroundColor: 'black',
-							color: 'pink',
-							fontSize: 32,
-						}}
-					>
-						{this.state.nowPlaying.song_title +
-							' by ' +
-							this.state.nowPlaying.artist}
-					</Text>
+					<View >
+						<Text
+							style={{
+								backgroundColor: 'black',
+								color: 'pink',
+								fontSize: 32,
+								textAlign: 'center',
+							}}
+						>
+							{this.state.nowPlaying.song_title +
+								' by ' +
+								this.state.nowPlaying.artist}
+						</Text>
+					</View>
 					<SafeAreaView style={styles.scrollView}>
 						<ScrollView
 							style={styles.scrollView}
@@ -407,7 +437,7 @@ const styles = StyleSheet.create({
 	scrollView: {
 		backgroundColor: 'black',
 		marginHorizontal: 10,
-		marginVertical: 10,
+		marginTop: 10,
 		height: 250,
 		alignSelf: 'stretch',
 	},
@@ -417,6 +447,8 @@ const styles = StyleSheet.create({
 		width: 300,
 		alignItems: 'center',
 		justifyContent: 'center',
+		borderColor: 'black',
+		borderWidth: 151,
 	},
 	playbackButton: {
 		alignItems: 'center',
