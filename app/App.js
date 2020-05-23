@@ -10,7 +10,7 @@ import {
 	ScrollView,
 	SafeAreaView,
 } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome , Fontisto } from '@expo/vector-icons';
 import Auth from './Auth';
 import SpotifyWebAPI from 'spotify-web-api-js';
 import cheerio from 'react-native-cheerio';
@@ -259,7 +259,7 @@ export default class App extends React.Component {
 						>
 							<Text
 								style={{
-									color: this.state.style.backgroundColor,
+									color: 'black',
 								}}
 							>
 								Log Out
@@ -320,7 +320,21 @@ export default class App extends React.Component {
 							/>
 						</View>
 					</View>
-					<Button type="primary" title="Refresh" onPress={this.refresh} />
+
+					<View >
+						<Text
+							style={styles.title}
+						>
+							{this.state.nowPlaying.song_title}
+							
+						</Text>
+						<Text
+							style={styles.artist}
+						>
+							{this.state.nowPlaying.artist}
+						</Text>
+					</View>
+
 					<View
 						style={{
 							flexDirection: 'row',
@@ -334,62 +348,34 @@ export default class App extends React.Component {
 							style={styles.playbackButton}
 							onPress={this.previous}
 						>
-							<Text
-								style={{
-									color: this.state.style.backgroundColor,
-									fontSize: 16,
-								}}
-							>
-								Previous
-							</Text>
+							<Fontisto name="step-backwrad" size={24} color="white" />
 						</TouchableOpacity>
-						<TouchableOpacity
-							style={styles.playbackButton}
-							onPress={this.pause}
-						>
-							<Text
-								style={{
-									color: this.state.style.backgroundColor,
-									fontSize: 16,
-								}}
+						{
+							this.state.pause ? (
+								<TouchableOpacity
+									style={styles.playbackButton}
+									onPress={this.play}
+								>
+									<Fontisto name="play" size={24} color="white" />
+								</TouchableOpacity>								
+							) :
+							(
+								<TouchableOpacity 
+									style={styles.playbackButton} 
+									onPress={this.pause}
+									>
+									<Fontisto name="pause" size={24} color="white" />
+								</TouchableOpacity>								
+							)
+						}
+
+
+						<TouchableOpacity 
+							style={styles.playbackButton} 
+							onPress={this.next}
 							>
-								Pause
-							</Text>
+							<Fontisto name="step-forward" size={24} color="white" />
 						</TouchableOpacity>
-						<TouchableOpacity style={styles.playbackButton} onPress={this.play}>
-							<Text
-								style={{
-									color: this.state.style.backgroundColor,
-									fontSize: 16,
-								}}
-							>
-								Play
-							</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.playbackButton} onPress={this.next}>
-							<Text
-								style={{
-									color: this.state.style.backgroundColor,
-									fontSize: 16,
-								}}
-							>
-								Next
-							</Text>
-						</TouchableOpacity>
-					</View>
-					<View >
-						<Text
-							style={{
-								backgroundColor: 'black',
-								color: 'pink',
-								fontSize: 32,
-								textAlign: 'center',
-							}}
-						>
-							{this.state.nowPlaying.song_title +
-								' by ' +
-								this.state.nowPlaying.artist}
-						</Text>
 					</View>
 					<SafeAreaView style={styles.scrollView}>
 						<ScrollView
@@ -411,6 +397,7 @@ export default class App extends React.Component {
 							</Text>
 						</ScrollView>
 					</SafeAreaView>
+					<Button type="primary" title="Refresh" onPress={this.refresh} />
 				</View>
 			)
 		) : (
@@ -453,7 +440,18 @@ const styles = StyleSheet.create({
 	},
 	playbackButton: {
 		alignItems: 'center',
-		backgroundColor: 'black',
 		padding: 10,
 	},
+	title: {
+		alignItems: 'flex-start',
+		color: 'white',
+		paddingLeft: 30,
+		fontSize: 40,
+	},
+	artist: {
+		alignItems: 'flex-start',
+		color: 'white',
+		paddingLeft: 30,
+		fontSize: 20,
+	}
 });
