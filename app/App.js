@@ -43,6 +43,7 @@ export default class App extends React.Component {
 		} else {
 			this.setState({ accessTokenAvailable: true });
 		}
+		this.refresh();
 	};
 
 	logout = async () => {
