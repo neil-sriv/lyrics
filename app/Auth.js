@@ -48,6 +48,10 @@ export default class Auth {
 				// &redirect_uri=${encodeURIComponent(redirectUrl)}
 				// &scope=${encodeURIComponent('user-read-email&response_type=token')}`,
 			});
+			console.log(result)
+			if (result.type == 'cancel'){
+				return ''
+			}
 			return result.params.code;
 		} catch (err) {
 			console.error(err);
@@ -57,6 +61,9 @@ export default class Auth {
 	async storeTokens() {
 		try {
 			const auth_code = await this.getAuthorizationCode();
+			if (auth_code == ''){
+				return 'error'
+			}
 			const credsB64 = btoa(
 				`${spotifyCredentials.clientId}:${spotifyCredentials.clientSecret}`
 			);
@@ -79,6 +86,7 @@ export default class Auth {
 			await this.setUserData('accessToken', accessToken);
 			await this.setUserData('refreshToken', refreshToken);
 			await this.setUserData('expirationTime', expirationTime);
+			return 'success'
 		} catch (err) {
 			console.error(err);
 		}
@@ -87,6 +95,7 @@ export default class Auth {
 	async useRefreshToken() {
 		try {
 			const refreshToken = await this.getUserData('refreshToken');
+			const trimmedToken = refreshToken.substring(1, refreshToken.length - 1);
 			const credsB64 = btoa(
 				`${spotifyCredentials.clientId}:${spotifyCredentials.clientSecret}`
 			);
@@ -97,12 +106,13 @@ export default class Auth {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					Accept: 'application/json',
 				},
-				body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
+				body: `grant_type=refresh_token&refresh_token=${trimmedToken}`,
 			});
 			const responseJson = await response.json();
 			if (responseJson.error) {
 				console.log('refresh token failed')
-				await this.storeTokens();
+				const res = await this.storeTokens();
+				return res
 			} else {
 				console.log('refresh token succeeded')
 				const {
@@ -153,8 +163,6 @@ export default class Auth {
 					headers: { Authorization: 'Bearer ' + trimmedToken },
 				}
 			);
-			console.log(Object.keys(response))
-			console.log(response.status)
 			if (response.status == 204) {
 				return {response: 'success'};
 			}
@@ -174,8 +182,6 @@ export default class Auth {
 					headers: { Authorization: 'Bearer ' + trimmedToken },
 				}
 			);
-			console.log(Object.keys(response))
-			console.log(response.status)
 			if (response.status == 204) {
 				return {response: 'success'};
 			}
