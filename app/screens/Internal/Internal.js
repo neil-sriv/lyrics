@@ -10,9 +10,15 @@ export default class Internal extends React.Component {
 		super(props);
 		// console.log(this.props);
         this.auth = this.props.auth;
-        // this.props.navigation.setOptions({
-        //     title: 'Hello',
-		// });
+        this.props.navigation.setOptions({
+            // title: 'Hello',
+            headerStyle: {
+                backgroundColor: 'black'
+            },
+            headerTitleStyle: {
+                color: 'white'
+            }
+		});
 	}
 
 	render() {

@@ -13,6 +13,8 @@ import {
 import { Fontisto } from '@expo/vector-icons';
 import cheerio from 'react-native-cheerio';
 import VerticalSlider from 'rn-vertical-slider';
+import Lyrics from './PlayerComponents/Lyrics';
+import Controls from './PlayerComponents/Controls';
 
 export default class Player extends React.Component {
 	constructor(props) {
@@ -23,10 +25,14 @@ export default class Player extends React.Component {
 			paused: false,
 			nowPlaying: '',
 			style: { backgroundColor: 'rgb(205, 150, 200)' },
+			showSlider: false,
+			slider: 50,
+			lyrics: 'No Lyrics Found',
+			remountKey: false,
 		};
 		this.props.navigation.setOptions({
-            headerRight: () => <Button />,
-            title: 'Hello',
+			headerRight: () => <Button />,
+			title: 'Hello',
 		});
 	}
 
@@ -98,6 +104,7 @@ export default class Player extends React.Component {
 				console.log(url.substring(0, url.indexOf('?')));
 				this.setState({
 					lyrics: responseJson.result.track.text,
+					remountKey: !this.state.remountKey,
 				});
 			}
 		} catch (err) {
@@ -154,6 +161,7 @@ export default class Player extends React.Component {
 				console.log(lyrics_url);
 				this.setState({
 					lyrics: l.text().trim(),
+					remountKey: !this.state.remountKey,
 				});
 				// html = html.substring(html.indexOf('VERSE'), html.indexOf('VERSE')+1000)
 				// console.log(html)
@@ -166,7 +174,7 @@ export default class Player extends React.Component {
 	play = async () => {
 		await this.auth.play();
 		this.setState({
-			pause: false,
+			paused: false,
 		});
 		this.refresh();
 	};
@@ -174,7 +182,7 @@ export default class Player extends React.Component {
 	pause = async () => {
 		await this.auth.pause();
 		this.setState({
-			pause: true,
+			paused: true,
 		});
 		this.refresh();
 	};
@@ -248,34 +256,65 @@ export default class Player extends React.Component {
 							backgroundColor: this.state.style.backgroundColor,
 						}}
 					>
-						<VerticalSlider
-							style={{
-								display: 'none',
-							}}
-							value={50}
-							disabled={false}
-							min={0}
-							max={100}
-							onChange={(value) => {
-								this.setState({
-									style: {
-										backgroundColor: `rgb(${Math.abs(value - 255)}, ${Math.abs(
-											value + 100
-										)}, ${Math.abs(value * 2 + 100)})`,
-									},
-								});
-							}}
-							onComplete={(value) => {
-								// console.log('COMPLETE', value);
-							}}
-							width={30}
-							height={200}
-							step={1}
-							borderRadius={100}
-							borderColor={'red'}
-							minimumTrackTintColor={'rgb(255, 100, 100)'}
-							maximumTrackTintColor={'rgb(155, 200, 300)'}
-						/>
+						{this.state.showSlider ? (
+							<View
+								style={{
+									flexDirection: 'row',
+									alignItems: 'center',
+									justifyContent: 'center',
+									backgroundColor: this.state.style.backgroundColor,
+								}}
+							>
+								<VerticalSlider
+									style={{
+										display: 'none',
+									}}
+									value={this.state.slider}
+									disabled={false}
+									min={0}
+									max={100}
+									onChange={(value) => {
+										this.setState({
+											style: {
+												backgroundColor: `rgb(${Math.abs(
+													value - 255
+												)}, ${Math.abs(value + 100)}, ${Math.abs(
+													value * 2 + 100
+												)})`,
+											},
+											slider: value,
+										});
+									}}
+									onComplete={(value) => {
+										// console.log('COMPLETE', value);
+									}}
+									width={30}
+									height={200}
+									step={1}
+									borderRadius={100}
+									borderColor={'red'}
+									minimumTrackTintColor={'rgb(255, 100, 100)'}
+									maximumTrackTintColor={'rgb(155, 200, 300)'}
+								/>
+								<Button
+									title="Hide"
+									onPress={() =>
+										this.setState({
+											showSlider: false,
+										})
+									}
+								/>
+							</View>
+						) : (
+							<Button
+								title="Change Background"
+								onPress={() =>
+									this.setState({
+										showSlider: true,
+									})
+								}
+							/>
+						)}
 					</View>
 				</View>
 
@@ -283,59 +322,18 @@ export default class Player extends React.Component {
 					<Text style={styles.title}>{this.state.nowPlaying.song_title}</Text>
 					<Text style={styles.artist}>{this.state.nowPlaying.artist}</Text>
 				</View>
-
-				<View
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						justifyContent: 'center',
-						backgroundColor: this.state.style.backgroundColor,
-						paddingBottom: 10,
-					}}
-				>
-					<TouchableOpacity
-						style={styles.playbackButton}
-						onPress={this.previous}
-					>
-						<Fontisto name="step-backwrad" size={24} color="white" />
-					</TouchableOpacity>
-					{this.state.pause ? (
-						<TouchableOpacity style={styles.playbackButton} onPress={this.play}>
-							<Fontisto name="play" size={24} color="white" />
-						</TouchableOpacity>
-					) : (
-						<TouchableOpacity
-							style={styles.playbackButton}
-							onPress={this.pause}
-						>
-							<Fontisto name="pause" size={24} color="white" />
-						</TouchableOpacity>
-					)}
-
-					<TouchableOpacity style={styles.playbackButton} onPress={this.next}>
-						<Fontisto name="step-forward" size={24} color="white" />
-					</TouchableOpacity>
-				</View>
-				<SafeAreaView style={styles.scrollView}>
-					<ScrollView
-						style={styles.scrollView}
-						ref={(ref) => {
-							this.scrollView = ref;
-						}}
-						onContentSizeChange={() =>
-							this.scrollView.scrollTo({ x: 0, y: 0, animated: true })
-						}
-					>
-						<Text
-							style={{
-								color: '#ffa',
-								fontSize: 20,
-							}}
-						>
-							{this.state.lyrics}
-						</Text>
-					</ScrollView>
-				</SafeAreaView>
+				<Controls
+					backgroundColor={this.state.style.backgroundColor}
+					previous={this.previous}
+					play={this.play}
+					pause={this.pause}
+					next={this.next}
+				/>
+				<Lyrics
+					lyrics={this.state.lyrics}
+					key={this.state.remountKey}
+					test={this.pause}
+				/>
 			</View>
 		);
 	}
