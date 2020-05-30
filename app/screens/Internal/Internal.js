@@ -2,22 +2,25 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from './Profile';
 import Player from './Player';
+import { createStackNavigator } from '@react-navigation/stack';
 
 const Tab = createBottomTabNavigator();
+const PlayerStack = createStackNavigator();
 
 export default class Internal extends React.Component {
 	constructor(props) {
 		super(props);
 		// console.log(this.props);
-        this.auth = this.props.auth;
-        this.props.navigation.setOptions({
-            // title: 'Hello',
-            headerStyle: {
-                backgroundColor: 'black'
-            },
-            headerTitleStyle: {
-                color: 'white'
-            }
+		this.auth = this.props.auth;
+		this.props.navigation.setOptions({
+			// title: 'Hello',
+			// headerStyle: {
+			// 	backgroundColor: 'black',
+			// },
+			// headerTitleStyle: {
+			// 	color: 'white',
+			// },
+			headerShown: false,
 		});
 	}
 
@@ -25,7 +28,7 @@ export default class Internal extends React.Component {
 		return (
 			<Tab.Navigator>
 				<Tab.Screen name="Player">
-					{(props) => <Player {...props} auth={this.auth} />}
+					{(props) => <PlayerStackScreen {...props} auth={this.auth} />}
 				</Tab.Screen>
 				<Tab.Screen name="Profile">
 					{(props) => <Profile {...props} auth={this.auth} />}
@@ -34,3 +37,14 @@ export default class Internal extends React.Component {
 		);
 	}
 }
+
+const PlayerStackScreen = (props) => {
+	const auth = props.auth;
+	return (
+		<PlayerStack.Navigator {...props}>
+			<PlayerStack.Screen {...props} name="Lyrics">
+				{(props) => <Player {...props} auth={auth} />}
+			</PlayerStack.Screen>
+		</PlayerStack.Navigator>
+	);
+};

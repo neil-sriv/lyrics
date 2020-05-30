@@ -23,7 +23,7 @@ export default class Lyrics extends React.Component {
 				>
 					<Text
 						style={{
-							color: '#ffa',
+							color: 'black',
 							fontSize: 20,
 						}}
 					>
@@ -37,7 +37,6 @@ export default class Lyrics extends React.Component {
 
 const styles = StyleSheet.create({
 	scrollView: {
-		backgroundColor: 'black',
 		marginHorizontal: 10,
 		marginTop: 10,
 		height: 200,

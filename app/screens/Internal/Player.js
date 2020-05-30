@@ -7,14 +7,12 @@ import {
 	TouchableOpacity,
 	Image,
 	Alert,
-	ScrollView,
-	SafeAreaView,
 } from 'react-native';
-import { Fontisto } from '@expo/vector-icons';
 import cheerio from 'react-native-cheerio';
 import VerticalSlider from 'rn-vertical-slider';
 import Lyrics from './PlayerComponents/Lyrics';
 import Controls from './PlayerComponents/Controls';
+import { createStackNavigator } from '@react-navigation/stack';
 
 export default class Player extends React.Component {
 	constructor(props) {
@@ -31,8 +29,9 @@ export default class Player extends React.Component {
 			remountKey: false,
 		};
 		this.props.navigation.setOptions({
-			headerRight: () => <Button />,
-			title: 'Hello',
+			headerRight: () => <Button title="Log Out" onPress={this.logout} />,
+			headerLeft: () => <Button title="Refresh" onPress={this.refresh} />,
+			headerTransparent: true,
 		});
 	}
 
@@ -114,7 +113,7 @@ export default class Player extends React.Component {
 
 	geniusLyrics = async () => {
 		try {
-			const artist = this.state.nowPlaying.artist;
+			let artist = this.state.nowPlaying.artist;
 			const song = this.state.nowPlaying.song_title;
 			const apikey =
 				'jvUtyBqDw0PFWrnHgLcqbQDoxdAqM-GIJeU-Zoit3IiaKiuun93bK_GbFZsEcIZC';
@@ -135,13 +134,23 @@ export default class Player extends React.Component {
 				return;
 			}
 			var lyrics_path = responseJson.response.hits[0].result.path;
+			artist = artist.replace(' ', '-');
 			var i = 0;
 			while (
-				lyrics_path.indexOf('lyrics') == -1 &&
+				(lyrics_path.indexOf('lyrics') == -1 ||
+					lyrics_path.toLowerCase().indexOf(artist.toLowerCase()) == -1) &&
 				responseJson.response.hits.length > i
 			) {
-				i += 1;
 				lyrics_path = responseJson.response.hits[i].result.path;
+				i += 1;
+			}
+			if (lyrics_path.toLowerCase().indexOf(artist.toLowerCase()) == -1) {
+				lyrics_path = null;
+				console.log('No Lyrics Found');
+				this.setState({
+					lyrics: 'No Lyrics Found',
+					remountKey: !this.state.remountKey,
+				});
 			}
 			if (
 				lyrics_path &&
@@ -220,24 +229,15 @@ export default class Player extends React.Component {
 				}}
 			>
 				<View
+					title="Margin"
 					style={{
-						alignItems: 'flex-end',
-						textAlign: 'flex-end',
-						justifyContent: 'flex-end',
+						height: 75,
 					}}
-				>
-					<TouchableOpacity style={styles.playbackButton} onPress={this.logout}>
-						<Text
-							style={{
-								color: 'black',
-							}}
-						>
-							Log Out
-						</Text>
-					</TouchableOpacity>
-				</View>
+				></View>
 				<View
+					title="Image and Slider"
 					style={{
+						flex: 3,
 						flexDirection: 'row',
 						alignItems: 'center',
 						justifyContent: 'center',
@@ -318,22 +318,40 @@ export default class Player extends React.Component {
 					</View>
 				</View>
 
-				<View>
+				<View
+					title="Title and Artist"
+					style={{
+						height: 'auto',
+					}}
+				>
 					<Text style={styles.title}>{this.state.nowPlaying.song_title}</Text>
 					<Text style={styles.artist}>{this.state.nowPlaying.artist}</Text>
 				</View>
-				<Controls
-					backgroundColor={this.state.style.backgroundColor}
-					previous={this.previous}
-					play={this.play}
-					pause={this.pause}
-					next={this.next}
-				/>
-				<Lyrics
-					lyrics={this.state.lyrics}
-					key={this.state.remountKey}
-					test={this.pause}
-				/>
+				<View
+					style={{
+						flex: 1,
+					}}
+				>
+					<Controls
+						backgroundColor={this.state.style.backgroundColor}
+						previous={this.previous}
+						play={this.play}
+						pause={this.pause}
+						next={this.next}
+					/>
+				</View>
+				<View
+					style={{
+						flex: 5,
+					}}
+				>
+					<Lyrics
+						lyrics={this.state.lyrics}
+						key={this.state.remountKey}
+						test={this.pause}
+						backgroundColor={this.state.style.backgroundColor}
+					/>
+				</View>
 			</View>
 		);
 	}
@@ -375,13 +393,13 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		alignItems: 'flex-start',
-		color: 'white',
+		color: 'black',
 		paddingLeft: 30,
 		fontSize: 40,
 	},
 	artist: {
 		alignItems: 'flex-start',
-		color: 'white',
+		color: 'black',
 		paddingLeft: 30,
 		fontSize: 20,
 	},
