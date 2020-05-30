@@ -22,7 +22,7 @@ export default class Player extends React.Component {
 			getPlaying: false,
 			paused: false,
 			nowPlaying: '',
-			style: { backgroundColor: 'rgb(205, 150, 200)' },
+			style: { backgroundColor: 'rgb(229, 119, 280)', textColor: 'rgb(0,0,0)' },
 			showSlider: false,
 			slider: 50,
 			lyrics: 'No Lyrics Found',
@@ -276,11 +276,11 @@ export default class Player extends React.Component {
 									onChange={(value) => {
 										this.setState({
 											style: {
-												backgroundColor: `rgb(${Math.abs(
-													value - 255
-												)}, ${Math.abs(value + 100)}, ${Math.abs(
-													value * 2 + 100
-												)})`,
+												backgroundColor: `rgb(${
+													Math.sin(0.06 * value + 0) * 100 + 215
+												}, ${Math.sin(0.06 * value + 2) * 100 + 215}, ${
+													Math.sin(0.06 * value + 4) * 100 + 215
+												})`,
 											},
 											slider: value,
 										});
