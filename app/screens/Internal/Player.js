@@ -387,13 +387,10 @@ const styles = StyleSheet.create({
 		width: 150,
 		alignItems: 'center',
 		justifyContent: 'center',
-		borderColor: 'black',
-		borderWidth: 76,
+		borderColor: 'white',
+		borderWidth: 85,
+		borderRadius: 10,
 		position: 'absolute'
-	},
-	playbackButton: {
-		alignItems: 'center',
-		padding: 10,
 	},
 	title: {
 		textAlign: 'center',
