@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 	scrollView: {
 		marginHorizontal: 10,
 		marginTop: 10,
-		height: 200,
+		height: 300,
 		alignSelf: 'stretch',
 	},
 });
