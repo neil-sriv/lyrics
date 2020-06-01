@@ -23,6 +23,7 @@ export default class Login extends React.Component {
 			const res = await this.auth.useRefreshToken();
 			if (res == 'success') {
 				this.setState({ accessTokenAvailable: true });
+				await this.profileData();
 				this.props.navigation.replace('Internal');
 			} else {
 				return Alert.alert('Login Cancelled');
@@ -32,6 +33,12 @@ export default class Login extends React.Component {
 			this.props.navigation.replace('Internal');
 		}
 	};
+
+	profileData = async () => {
+		await this.auth.storeUser();
+		await this.auth.storeTopTracks();
+		await this.auth.storeTopArtists();
+	}
 
 	render() {
 		return (

@@ -42,15 +42,15 @@ export default class Auth {
 					spotifyCredentials.clientId +
 					(this._scopes ? '&scope=' + encodeURIComponent(this._scopes) : '') +
 					'&redirect_uri=' +
-					encodeURIComponent(redirectUrl) + 
+					encodeURIComponent(redirectUrl) +
 					'&show_dialog=true',
 				// 			authUrl: `https://accounts.spotify.com/authorize?response_type=code&client_id=${spotifyCredentials.client_id}
 				// &redirect_uri=${encodeURIComponent(redirectUrl)}
 				// &scope=${encodeURIComponent('user-read-email&response_type=token')}`,
 			});
-			console.log(result)
-			if (result.type == 'cancel'){
-				return ''
+			console.log(result);
+			if (result.type == 'cancel') {
+				return '';
 			}
 			return result.params.code;
 		} catch (err) {
@@ -61,8 +61,8 @@ export default class Auth {
 	async storeTokens() {
 		try {
 			const auth_code = await this.getAuthorizationCode();
-			if (auth_code == ''){
-				return 'error'
+			if (auth_code == '') {
+				return 'error';
 			}
 			const credsB64 = btoa(
 				`${spotifyCredentials.clientId}:${spotifyCredentials.clientSecret}`
@@ -86,7 +86,7 @@ export default class Auth {
 			await this.setUserData('accessToken', accessToken);
 			await this.setUserData('refreshToken', refreshToken);
 			await this.setUserData('expirationTime', expirationTime);
-			return 'success'
+			return 'success';
 		} catch (err) {
 			console.error(err);
 		}
@@ -110,11 +110,11 @@ export default class Auth {
 			});
 			const responseJson = await response.json();
 			if (responseJson.error) {
-				console.log('refresh token failed')
+				console.log('refresh token failed');
 				const res = await this.storeTokens();
-				return res
+				return res;
 			} else {
-				console.log('refresh token succeeded')
+				console.log('refresh token succeeded');
 				const {
 					access_token: newAccessToken,
 					refresh_token: newRefreshToken,
@@ -127,6 +127,60 @@ export default class Auth {
 				if (newRefreshToken) {
 					await this.setUserData('refreshToken', newRefreshToken);
 				}
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	async storeUser() {
+		try {
+			var accessToken = await this.getUserData('accessToken');
+			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
+			const response = await fetch('https://api.spotify.com/v1/me', {
+				method: 'GET',
+				headers: { Authorization: 'Bearer ' + trimmedToken },
+			});
+			if (response.status == 200){
+				const responseJson = await response.json();
+				await this.setUserData('user', responseJson)
+				return responseJson;
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	async storeTopArtists() {
+		try {
+			var accessToken = await this.getUserData('accessToken');
+			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
+			const response = await fetch('https://api.spotify.com/v1/me/top/artists?limit=3', {
+				method: 'GET',
+				headers: { Authorization: 'Bearer ' + trimmedToken },
+			});
+			if (response.status == 200){
+				const responseJson = await response.json();
+				await this.setUserData('artists', responseJson)
+				return responseJson;
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	async storeTopTracks() {
+		try {
+			var accessToken = await this.getUserData('accessToken');
+			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
+			const response = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=3', {
+				method: 'GET',
+				headers: { Authorization: 'Bearer ' + trimmedToken },
+			});
+			if (response.status == 200){
+				const responseJson = await response.json();
+				await this.setUserData('tracks', responseJson)
+				return responseJson;
 			}
 		} catch (err) {
 			console.error(err);
@@ -164,7 +218,7 @@ export default class Auth {
 				}
 			);
 			if (response.status == 204) {
-				return {response: 'success'};
+				return { response: 'success' };
 			}
 		} catch (err) {
 			console.error(err);
@@ -180,16 +234,21 @@ export default class Auth {
 				{
 					method: 'PUT',
 					headers: { Authorization: 'Bearer ' + trimmedToken },
+					// body: {
+					// 	context_uri: 'spotify:album:5ht7ItJgpBH7W6vJ5BqpPr',
+					// 	offset: { position: 5 },
+					// 	position_ms: 0,
+					// },
 				}
 			);
+			console.log(response.status);
 			if (response.status == 204) {
-				return {response: 'success'};
+				return { response: 'success' };
 			}
 		} catch (err) {
 			console.error(err);
 		}
 	}
-
 
 	async next() {
 		try {
@@ -203,7 +262,7 @@ export default class Auth {
 				}
 			);
 			if (response.status == 204) {
-				return {response: 'success'};
+				return { response: 'success' };
 			}
 		} catch (err) {
 			console.error(err);
@@ -222,12 +281,12 @@ export default class Auth {
 				}
 			);
 			if (response.status == 204) {
-				return {response: 'success'};
+				return { response: 'success' };
 			}
 		} catch (err) {
 			console.error(err);
 		}
-}
+	}
 
 	async setUserData(key, data) {
 		try {
