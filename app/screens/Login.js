@@ -11,7 +11,7 @@ export default class Login extends React.Component {
 	}
 
 	async componentDidMount() {
-		await this.login();
+		this.login();
 	}
 
 	login = async () => {

@@ -26,7 +26,15 @@ export default class Internal extends React.Component {
 
 	render() {
 		return (
-			<Tab.Navigator>
+			<Tab.Navigator
+				tabBarOptions={{
+					activeTintColor: 'tomato',
+					inactiveTintColor: 'gray',
+                    style: {
+                        backgroundColor: 'rgb(15,15,15)'
+                    }
+				}}
+			>
 				<Tab.Screen name="Player">
 					{(props) => <PlayerStackScreen {...props} auth={this.auth} />}
 				</Tab.Screen>

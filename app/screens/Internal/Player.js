@@ -31,7 +31,8 @@ export default class Player extends React.Component {
 		this.props.navigation.setOptions({
 			headerRight: () => <Button title="Log Out" onPress={this.logout} />,
 			headerLeft: () => <Button title="Refresh" onPress={this.refresh} />,
-			headerTransparent: true,
+            headerTransparent: true,
+            title: '',
 		});
 	}
 
