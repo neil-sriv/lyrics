@@ -95,7 +95,13 @@ export default class Auth {
 	async useRefreshToken() {
 		try {
 			const refreshToken = await this.getUserData('refreshToken');
-			const trimmedToken = refreshToken.substring(1, refreshToken.length - 1);
+			var trimmedToken;
+			if (refreshToken) {
+				trimmedToken = refreshToken.substring(1, refreshToken.length - 1);
+			}
+			else {
+				trimmedToken = ''
+			}
 			const credsB64 = btoa(
 				`${spotifyCredentials.clientId}:${spotifyCredentials.clientSecret}`
 			);

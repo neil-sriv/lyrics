@@ -12,7 +12,6 @@ import cheerio from 'react-native-cheerio';
 import VerticalSlider from 'rn-vertical-slider';
 import Lyrics from './PlayerComponents/Lyrics';
 import Controls from './PlayerComponents/Controls';
-import { createStackNavigator } from '@react-navigation/stack';
 
 export default class Player extends React.Component {
 	constructor(props) {
@@ -25,20 +24,38 @@ export default class Player extends React.Component {
 			style: { backgroundColor: 'rgb(229, 119, 280)', textColor: 'rgb(0,0,0)' },
 			showSlider: false,
 			slider: 50,
-			lyrics: 'No Lyrics Found',
+			lyrics: 'Searching for lyrics...',
 			remountKey: false,
 		};
 		this.props.navigation.setOptions({
-			headerRight: () => <Button title="Log Out" onPress={this.logout} />,
+			headerRight: () => {
+				return (
+					<View
+						style={{
+							flexDirection: 'row',
+						}}
+					>
+						<Button title="Log Out" onPress={this.logout} />
+						<Button
+							title="Profile"
+							onPress={this.goToProfile}
+						/>
+					</View>
+				);
+			},
 			headerLeft: () => <Button title="Refresh" onPress={this.refresh} />,
-            headerTransparent: true,
-            title: '',
+			headerTransparent: true,
+			title: '',
 		});
 	}
 
 	componentDidMount() {
 		this.refresh();
 	}
+
+	goToProfile = () => {
+		this.props.navigation.navigate('Profile');
+	};
 
 	refresh = async () => {
 		const tokenExpirationTime = await this.auth.getUserData('expirationTime');

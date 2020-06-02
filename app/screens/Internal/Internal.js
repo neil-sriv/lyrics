@@ -5,6 +5,7 @@ import Player from './Player';
 import { createStackNavigator } from '@react-navigation/stack';
 
 const Tab = createBottomTabNavigator();
+const InternalStack = createStackNavigator();
 const PlayerStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 
@@ -27,22 +28,30 @@ export default class Internal extends React.Component {
 
 	render() {
 		return (
-			<Tab.Navigator
-				tabBarOptions={{
-					activeTintColor: 'tomato',
-					inactiveTintColor: 'gray',
-					style: {
-						backgroundColor: 'rgb(15,15,15)',
-					},
-				}}
-			>
-				<Tab.Screen name="Player">
-					{(props) => <PlayerStackScreen {...props} auth={this.auth} />}
-				</Tab.Screen>
-				<Tab.Screen name="Profile">
-					{(props) => <ProfileStackScreen {...props} auth={this.auth} />}
-				</Tab.Screen>
-			</Tab.Navigator>
+			<InternalStack.Navigator>
+				<PlayerStack.Screen name="Lyrics">
+					{(props) => <Player {...props} auth={this.props.auth} />}
+				</PlayerStack.Screen>
+				<ProfileStack.Screen name="Profile">
+					{(props) => <Profile {...props} auth={this.props.auth} />}
+				</ProfileStack.Screen>
+			</InternalStack.Navigator>
+			// <Tab.Navigator
+			// 	tabBarOptions={{
+			// 		activeTintColor: 'tomato',
+			// 		inactiveTintColor: 'gray',
+			// 		style: {
+			// 			backgroundColor: 'rgb(15,15,15)',
+			// 		},
+			// 	}}
+			// >
+			// 	<Tab.Screen name="Player">
+			// 		{(props) => <PlayerStackScreen {...props} auth={this.auth} />}
+			// 	</Tab.Screen>
+			// 	<Tab.Screen name="Profile">
+			// 		{(props) => <ProfileStackScreen {...props} auth={this.auth} />}
+			// 	</Tab.Screen>
+			// </Tab.Navigator>
 		);
 	}
 }
