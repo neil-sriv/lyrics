@@ -18,14 +18,14 @@ export default class Controls extends React.Component {
 					alignItems: 'center',
 					justifyContent: 'center',
 					backgroundColor: this.props.backgroundColor,
-					paddingBottom: 10,
+					marginTop: -20,
 				}}
 			>
 				<TouchableOpacity
 					style={styles.playbackButton}
 					onPress={this.props.previous}
 				>
-					<Fontisto name="step-backwrad" size={24} color="white" />
+					<Fontisto name="step-backwrad" size={28} color="white" />
 				</TouchableOpacity>
 				{this.state.paused ? (
 					<TouchableOpacity
@@ -35,7 +35,7 @@ export default class Controls extends React.Component {
 							this.setState({ paused: false });
 						}}
 					>
-						<Fontisto name="play" size={24} color="white" />
+						<Fontisto name="play" size={40} color="white" />
 					</TouchableOpacity>
 				) : (
 					<TouchableOpacity
@@ -45,7 +45,7 @@ export default class Controls extends React.Component {
 							this.setState({ paused: true });
 						}}
 					>
-						<Fontisto name="pause" size={24} color="white" />
+						<Fontisto name="pause" size={40} color="white" />
 					</TouchableOpacity>
 				)}
 
@@ -53,7 +53,7 @@ export default class Controls extends React.Component {
 					style={styles.playbackButton}
 					onPress={this.props.next}
 				>
-					<Fontisto name="step-forward" size={24} color="white" />
+					<Fontisto name="step-forward" size={28} color="white" />
 				</TouchableOpacity>
 			</View>
 		);
@@ -63,6 +63,7 @@ export default class Controls extends React.Component {
 const styles = StyleSheet.create({
 	playbackButton: {
 		alignItems: 'center',
-		padding: 10,
+		paddingLeft: 30,
+		paddingRight: 30,
 	},
 });

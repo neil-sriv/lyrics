@@ -43,7 +43,7 @@ export default class Login extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<Button title="login" onPress={this.login} />
+				<Button title="loginhere" onPress={this.login} />
 			</View>
 		);
 	}

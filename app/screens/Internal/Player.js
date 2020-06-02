@@ -4,7 +4,6 @@ import {
 	Text,
 	View,
 	Button,
-	TouchableOpacity,
 	Image,
 	Alert,
 } from 'react-native';
@@ -268,82 +267,96 @@ export default class Player extends React.Component {
 							style={{ height: 150, width: 150 }}
 						/>
 					</View>
-					<View
-						style={{
-							paddingHorizontal: 10,
-							backgroundColor: this.state.style.backgroundColor,
-						}}
-					>
-						{this.state.showSlider ? (
-							<View
-								style={{
-									flexDirection: 'row',
-									alignItems: 'center',
-									justifyContent: 'center',
-									backgroundColor: this.state.style.backgroundColor,
-								}}
-							>
-								<VerticalSlider
+						<View
+							style={{
+								paddingHorizontal: 10,
+								backgroundColor: this.state.style.backgroundColor,
+								marginLeft: 300
+							}}
+						>
+							{this.state.showSlider ? (
+								<View
 									style={{
-										display: 'none',
+										flexDirection: 'row',
+										alignItems: 'center',
+										justifyContent: 'center',
+										backgroundColor: this.state.style.backgroundColor,
 									}}
-									value={this.state.slider}
-									disabled={false}
-									min={0}
-									max={100}
-									onChange={(value) => {
-										this.setState({
-											style: {
-												backgroundColor: `rgb(${
-													Math.sin(0.06 * value + 0) * 100 + 215
-												}, ${Math.sin(0.06 * value + 2) * 100 + 215}, ${
-													Math.sin(0.06 * value + 4) * 100 + 215
-												})`,
-											},
-											slider: value,
-										});
-									}}
-									onComplete={(value) => {
-										// console.log('COMPLETE', value);
-									}}
-									width={30}
-									height={200}
-									step={1}
-									borderRadius={100}
-									borderColor={'red'}
-									minimumTrackTintColor={'rgb(255, 100, 100)'}
-									maximumTrackTintColor={'rgb(155, 200, 300)'}
-								/>
+								>
+									<VerticalSlider
+										style={{
+											display: 'none',
+										}}
+										value={this.state.slider}
+										disabled={false}
+										min={0}
+										max={100}
+										onChange={(value) => {
+											this.setState({
+												style: {
+													backgroundColor: `rgb(${
+														Math.sin(0.06 * value + 0) * 100 + 215
+													}, ${Math.sin(0.06 * value + 2) * 100 + 215}, ${
+														Math.sin(0.06 * value + 4) * 100 + 215
+													})`,
+												},
+												slider: value,
+											});
+										}}
+										onComplete={(value) => {
+											// console.log('COMPLETE', value);
+										}}
+										width={30}
+										height={200}
+										step={1}
+										borderRadius={100}
+										borderColor={'red'}
+										minimumTrackTintColor={'rgb(255, 100, 100)'}
+										maximumTrackTintColor={'rgb(155, 200, 300)'}
+									/>
+									<Button
+										title="Hide"
+										onPress={() =>
+											this.setState({
+												showSlider: false,
+											})
+										}
+									/>
+								</View>
+							) : (
 								<Button
-									title="Hide"
+									style={{
+										paddingLeft: 100
+									}}
+									title="0"
 									onPress={() =>
 										this.setState({
-											showSlider: false,
+											showSlider: true,
 										})
 									}
 								/>
-							</View>
-						) : (
-							<Button
-								title="Change Background"
-								onPress={() =>
-									this.setState({
-										showSlider: true,
-									})
-								}
-							/>
-						)}
-					</View>
+							)}
+						</View>
 				</View>
 
 				<View
 					title="Title and Artist"
-					style={{
-						height: 'auto',
-					}}
 				>
 					<Text style={styles.title}>{this.state.nowPlaying.song_title}</Text>
 					<Text style={styles.artist}>{this.state.nowPlaying.artist}</Text>
+				</View>
+				<View
+					style={{
+						flex: 5,
+						paddingLeft: 20,
+					}}
+				>
+					<Lyrics
+						lyrics={this.state.lyrics}
+						key={this.state.remountKey}
+						test={this.pause}
+						backgroundColor={this.state.style.backgroundColor}
+					/>
 				</View>
 				<View
 					style={{
@@ -356,18 +369,6 @@ export default class Player extends React.Component {
 						play={this.play}
 						pause={this.pause}
 						next={this.next}
-					/>
-				</View>
-				<View
-					style={{
-						flex: 5,
-					}}
-				>
-					<Lyrics
-						lyrics={this.state.lyrics}
-						key={this.state.remountKey}
-						test={this.pause}
-						backgroundColor={this.state.style.backgroundColor}
 					/>
 				</View>
 			</View>
@@ -402,23 +403,19 @@ const styles = StyleSheet.create({
 		width: 150,
 		alignItems: 'center',
 		justifyContent: 'center',
-		borderColor: 'black',
-		borderWidth: 76,
-	},
-	playbackButton: {
-		alignItems: 'center',
-		padding: 10,
+		borderColor: 'white',
+		borderWidth: 85,
+		borderRadius: 10,
+		position: 'absolute'
 	},
 	title: {
-		alignItems: 'flex-start',
+		textAlign: 'center',
 		color: 'black',
-		paddingLeft: 30,
 		fontSize: 40,
 	},
 	artist: {
-		alignItems: 'flex-start',
+		textAlign: 'center',
 		color: 'black',
-		paddingLeft: 30,
 		fontSize: 20,
 	},
 });
