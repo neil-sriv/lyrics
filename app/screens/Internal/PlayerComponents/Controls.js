@@ -1,12 +1,14 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet, View } from 'react-native';
-import { Fontisto } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 export default class Controls extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			paused: this.props.paused,
+			repeat: 'off',
+			shuffle: false,
 		};
 	}
 
@@ -23,9 +25,22 @@ export default class Controls extends React.Component {
 			>
 				<TouchableOpacity
 					style={styles.playbackButton}
+					onPress={() => {
+						this.props.shuffle(!this.state.shuffle);
+						this.setState({ shuffle: !this.state.shuffle });
+					}}
+				>
+					<Feather
+						name="shuffle"
+						size={24}
+						color={this.state.shuffle ? '#2AA7E7' : 'black'}
+					/>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={styles.playbackButton}
 					onPress={this.props.previous}
 				>
-					<Fontisto name="step-backwrad" size={28} color="white" />
+					<Feather name="skip-back" size={24} color="black" />
 				</TouchableOpacity>
 				{this.state.paused ? (
 					<TouchableOpacity
@@ -35,7 +50,7 @@ export default class Controls extends React.Component {
 							this.setState({ paused: false });
 						}}
 					>
-						<Fontisto name="play" size={40} color="white" />
+						<Feather name="play" size={24} color="black" />
 					</TouchableOpacity>
 				) : (
 					<TouchableOpacity
@@ -45,7 +60,7 @@ export default class Controls extends React.Component {
 							this.setState({ paused: true });
 						}}
 					>
-						<Fontisto name="pause" size={40} color="white" />
+						<Feather name="pause" size={24} color="black" />
 					</TouchableOpacity>
 				)}
 
@@ -53,7 +68,25 @@ export default class Controls extends React.Component {
 					style={styles.playbackButton}
 					onPress={this.props.next}
 				>
-					<Fontisto name="step-forward" size={28} color="white" />
+					<Feather name="skip-forward" size={24} color="black" />
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={styles.playbackButton}
+					onPress={() => {
+						if (this.state.repeat == 'off') {
+							this.props.repeat('context');
+							this.setState({ repeat: 'context' });
+						} else {
+							this.props.repeat('off');
+							this.setState({ repeat: 'off' });
+						}
+					}}
+				>
+					<Feather
+						name="repeat"
+						size={24}
+						color={this.state.repeat != 'off' ? '#2AA7E7' : 'black'}
+					/>
 				</TouchableOpacity>
 			</View>
 		);
@@ -63,7 +96,7 @@ export default class Controls extends React.Component {
 const styles = StyleSheet.create({
 	playbackButton: {
 		alignItems: 'center',
-		paddingLeft: 30,
-		paddingRight: 30,
+		paddingHorizontal: 20,
+		paddingTop: 10,
 	},
 });

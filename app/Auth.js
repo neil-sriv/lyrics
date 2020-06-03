@@ -22,16 +22,6 @@ export default class Auth {
 	}
 
 	async getAuthorizationCode() {
-		// 	const redirectUrl = AuthSession.getRedirectUrl();
-		// console.log(
-		// 	'https://accounts.spotify.com/authorize' +
-		// 		'?response_type=code' +
-		// 		'&client_id=' +
-		// 		spotifyCredentials.clientId +
-		// 		(this._scopes ? '&scope=' + encodeURIComponent(this._scopes) : '') +
-		// 		'&redirect_uri=' +
-		// 		encodeURIComponent(redirectUrl)
-		// );
 		try {
 			const redirectUrl = AuthSession.getRedirectUrl();
 			const result = await AuthSession.startAsync({
@@ -44,9 +34,6 @@ export default class Auth {
 					'&redirect_uri=' +
 					encodeURIComponent(redirectUrl) +
 					'&show_dialog=true',
-				// 			authUrl: `https://accounts.spotify.com/authorize?response_type=code&client_id=${spotifyCredentials.client_id}
-				// &redirect_uri=${encodeURIComponent(redirectUrl)}
-				// &scope=${encodeURIComponent('user-read-email&response_type=token')}`,
 			});
 			console.log(result);
 			if (result.type == 'cancel') {
@@ -283,6 +270,44 @@ export default class Auth {
 				'https://api.spotify.com/v1/me/player/previous',
 				{
 					method: 'POST',
+					headers: { Authorization: 'Bearer ' + trimmedToken },
+				}
+			);
+			if (response.status == 204) {
+				return { response: 'success' };
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	async toggleShuffle(shuffle) {
+		try {
+			var accessToken = await this.getUserData('accessToken');
+			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
+			const response = await fetch(
+				`https://api.spotify.com/v1/me/player/shuffle?state=${shuffle}`,
+				{
+					method: 'PUT',
+					headers: { Authorization: 'Bearer ' + trimmedToken },
+				}
+			);
+			if (response.status == 204) {
+				return { response: 'success' };
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	async toggleRepeat(repeat) {
+		try {
+			var accessToken = await this.getUserData('accessToken');
+			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
+			const response = await fetch(
+				`https://api.spotify.com/v1/me/player/repeat?state=${repeat}`,
+				{
+					method: 'PUT',
 					headers: { Authorization: 'Bearer ' + trimmedToken },
 				}
 			);

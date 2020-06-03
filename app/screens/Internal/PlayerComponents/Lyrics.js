@@ -13,7 +13,6 @@ export default class Lyrics extends React.Component {
 		return (
 			<SafeAreaView style={styles.scrollView}>
 				<ScrollView
-					style={styles.scrollView}
 					ref={(ref) => {
 						this.scrollView = ref;
 					}}
@@ -23,7 +22,7 @@ export default class Lyrics extends React.Component {
 				>
 					<Text
 						style={{
-							color: 'black',
+							color: '#2AA7E7',
 							fontSize: 20,
 						}}
 					>
@@ -37,9 +36,19 @@ export default class Lyrics extends React.Component {
 
 const styles = StyleSheet.create({
 	scrollView: {
-		marginHorizontal: 10,
+		// marginHorizontal: 10,
 		marginTop: 10,
 		height: 300,
-		alignSelf: 'stretch',
+		width: 319,
+		position: 'relative',
+		// backgroundColor: (42, 167, 231, 0.1)
+		backgroundColor: 'white',
+		borderColor: 'white',
+		borderWidth: 10,
+		borderRadius: 10,
+		shadowColor: 'black',
+		shadowOpacity: 0.15,
+		shadowRadius: 10,
+		shadowOffset: { width: 0, height: 0 },
 	},
 });

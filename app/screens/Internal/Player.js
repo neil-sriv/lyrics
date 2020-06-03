@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-	StyleSheet,
-	Text,
-	View,
-	Button,
-	Image,
-	Alert,
-} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, Alert } from 'react-native';
 import cheerio from 'react-native-cheerio';
 import VerticalSlider from 'rn-vertical-slider';
 import Lyrics from './PlayerComponents/Lyrics';
 import Controls from './PlayerComponents/Controls';
+import { Feather } from '@expo/vector-icons';
 
 export default class Player extends React.Component {
 	constructor(props) {
@@ -20,7 +14,7 @@ export default class Player extends React.Component {
 			getPlaying: false,
 			paused: false,
 			nowPlaying: '',
-			style: { backgroundColor: 'rgb(229, 119, 280)', textColor: 'rgb(0,0,0)' },
+			style: { backgroundColor: 'white', textColor: 'rgb(0,0,0)' },
 			showSlider: false,
 			slider: 50,
 			lyrics: 'Searching for lyrics...',
@@ -34,15 +28,39 @@ export default class Player extends React.Component {
 							flexDirection: 'row',
 						}}
 					>
-						<Button title="Log Out" onPress={this.logout} />
-						<Button
-							title="Profile"
+						<Feather.Button
+							name="log-out"
+							onPress={this.logout}
+							size={24}
+							backgroundColor="white"
+							iconStyle={{
+								color: '#2AA7E7',
+							}}
+						/>
+						<Feather.Button
+							name="user"
 							onPress={this.goToProfile}
+							size={24}
+							backgroundColor="white"
+							iconStyle={{
+								color: '#2AA7E7',
+							}}
 						/>
 					</View>
 				);
 			},
-			headerLeft: () => <Button title="Refresh" onPress={this.refresh} />,
+			headerLeft: () => (
+				<Feather.Button
+					name="refresh-ccw"
+					onPress={this.refresh}
+					size={24}
+					backgroundColor="white"
+					iconStyle={{
+						color: '#2AA7E7',
+						paddingLeft: 15,
+					}}
+				/>
+			),
 			headerTransparent: true,
 			title: '',
 		});
@@ -84,6 +102,10 @@ export default class Player extends React.Component {
 			paused: !playback.is_playing,
 		});
 		if (previous_song != this.state.nowPlaying.song_title) {
+			this.setState({
+				lyrics: 'Searching for lyrics...',
+				remountKey: !this.state.remountKey,
+			});
 			this.getLyrics();
 		}
 		const seconds =
@@ -145,8 +167,10 @@ export default class Player extends React.Component {
 			});
 			const responseJson = await searchResponse.json();
 			if (responseJson.response.hits.length == 0) {
+				console.log('No Lyrics Found');
 				this.setState({
 					lyrics: 'No Lyrics Found',
+					remountKey: !this.state.remountKey,
 				});
 				return;
 			}
@@ -223,6 +247,16 @@ export default class Player extends React.Component {
 		this.refresh();
 	};
 
+	shuffle = async (shuffle) => {
+		await this.auth.toggleShuffle(shuffle);
+		this.refresh();
+	};
+
+	repeat = async (repeat) => {
+		await this.auth.toggleRepeat(repeat);
+		this.refresh();
+	};
+
 	logout = async () => {
 		await this.auth.setUserData('accessToken', '');
 		await this.auth.setUserData('refreshToken', '');
@@ -237,6 +271,7 @@ export default class Player extends React.Component {
 	render() {
 		return (
 			<View
+				title="screen"
 				style={{
 					flex: 1,
 					backgroundColor: this.state.style.backgroundColor,
@@ -267,88 +302,90 @@ export default class Player extends React.Component {
 							style={{ height: 150, width: 150 }}
 						/>
 					</View>
-						<View
-							style={{
-								paddingHorizontal: 10,
-								backgroundColor: this.state.style.backgroundColor,
-								marginLeft: 300
-							}}
-						>
-							{this.state.showSlider ? (
-								<View
+					<View
+						style={{
+							paddingHorizontal: 10,
+							backgroundColor: this.state.style.backgroundColor,
+							marginLeft: 300,
+						}}
+					>
+						{this.state.showSlider ? (
+							<View
+								style={{
+									flexDirection: 'row',
+									alignItems: 'center',
+									justifyContent: 'center',
+									backgroundColor: this.state.style.backgroundColor,
+								}}
+							>
+								<VerticalSlider
 									style={{
-										flexDirection: 'row',
-										alignItems: 'center',
-										justifyContent: 'center',
-										backgroundColor: this.state.style.backgroundColor,
+										display: 'none',
 									}}
-								>
-									<VerticalSlider
-										style={{
-											display: 'none',
-										}}
-										value={this.state.slider}
-										disabled={false}
-										min={0}
-										max={100}
-										onChange={(value) => {
-											this.setState({
-												style: {
-													backgroundColor: `rgb(${
-														Math.sin(0.06 * value + 0) * 100 + 215
-													}, ${Math.sin(0.06 * value + 2) * 100 + 215}, ${
-														Math.sin(0.06 * value + 4) * 100 + 215
-													})`,
-												},
-												slider: value,
-											});
-										}}
-										onComplete={(value) => {
-											// console.log('COMPLETE', value);
-										}}
-										width={30}
-										height={200}
-										step={1}
-										borderRadius={100}
-										borderColor={'red'}
-										minimumTrackTintColor={'rgb(255, 100, 100)'}
-										maximumTrackTintColor={'rgb(155, 200, 300)'}
-									/>
-									<Button
-										title="Hide"
-										onPress={() =>
-											this.setState({
-												showSlider: false,
-											})
-										}
-									/>
-								</View>
-							) : (
+									value={this.state.slider}
+									disabled={false}
+									min={0}
+									max={100}
+									onChange={(value) => {
+										this.setState({
+											style: {
+												backgroundColor: `rgb(${
+													Math.sin(0.06 * value + 0) * 100 + 215
+												}, ${Math.sin(0.06 * value + 2) * 100 + 215}, ${
+													Math.sin(0.06 * value + 4) * 100 + 215
+												})`,
+											},
+											slider: value,
+										});
+									}}
+									onComplete={(value) => {
+										// console.log('COMPLETE', value);
+									}}
+									width={30}
+									height={200}
+									step={1}
+									borderRadius={100}
+									borderColor={'red'}
+									minimumTrackTintColor={'rgb(255, 100, 100)'}
+									maximumTrackTintColor={'rgb(155, 200, 300)'}
+								/>
 								<Button
-									style={{
-										paddingLeft: 100
-									}}
-									title="0"
+									title="Hide"
 									onPress={() =>
 										this.setState({
-											showSlider: true,
+											showSlider: false,
 										})
 									}
 								/>
-							)}
-						</View>
+							</View>
+						) : (
+							<Button
+								style={{
+									paddingLeft: 100,
+								}}
+								title="0"
+								onPress={() =>
+									this.setState({
+										showSlider: true,
+									})
+								}
+							/>
+						)}
+					</View>
 				</View>
 
-				<View
-					title="Title and Artist"
-				>
+				<View title="Title and Artist">
 					<Text style={styles.title}>{this.state.nowPlaying.song_title}</Text>
 					<Text style={styles.artist}>{this.state.nowPlaying.artist}</Text>
 				</View>
 				<View
+					title="Lyrics"
 					style={{
 						flex: 5,
-						paddingLeft: 20,
+						// paddingLeft: 20,
+						justifyContent: 'center',
+						alignItems: 'center',
+						paddingBottom: 25,
 					}}
 				>
 					<Lyrics
@@ -359,6 +396,7 @@ export default class Player extends React.Component {
 					/>
 				</View>
 				<View
+					title="controls"
 					style={{
 						flex: 1,
 					}}
@@ -369,6 +407,8 @@ export default class Player extends React.Component {
 						play={this.play}
 						pause={this.pause}
 						next={this.next}
+						shuffle={this.shuffle}
+						repeat={this.repeat}
 					/>
 				</View>
 			</View>
@@ -398,19 +438,23 @@ const styles = StyleSheet.create({
 		alignSelf: 'stretch',
 	},
 	imageContainer: {
-		backgroundColor: 'black',
+		backgroundColor: 'white',
 		height: 150,
 		width: 150,
 		alignItems: 'center',
 		justifyContent: 'center',
-		borderColor: 'white',
+		borderColor: 'rgba(42, 167, 231, 0.1)',
 		borderWidth: 85,
 		borderRadius: 10,
-		position: 'absolute'
+		position: 'absolute',
+		shadowColor: 'black',
+		shadowOpacity: 0.35,
+		shadowRadius: 10,
+		shadowOffset: { width: 0, height: 0 },
 	},
 	title: {
 		textAlign: 'center',
-		color: 'black',
+		color: '#2AA7E7',
 		fontSize: 40,
 	},
 	artist: {
