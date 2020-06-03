@@ -28,10 +28,10 @@ export default class Profile extends React.Component {
 
 	render() {
 		return (
-			<View>
+			<View style={styles.container}>
 				{this.state.user==null ? <Text> </Text> :
 				<View
-					style={{alignItems: "center",marginTop: 100, }}
+					style={{alignItems: "center",marginTop: 100}}
 				>
 					<View style={styles.imageContainer}>
 						<Image 
@@ -62,7 +62,7 @@ export default class Profile extends React.Component {
 						shadowColor: 'black',
 						shadowOpacity: 0.35,
 						shadowRadius: 10,
-						shadowOffset: { width: 0, height: 5 },
+						shadowOffset: { width: 0, height: 0 },
 					}}
 					>
 						{/* <Text>{this.state.user.followers}</Text>
@@ -110,6 +110,10 @@ export default class Profile extends React.Component {
 }
 
 const styles = StyleSheet.create({
+	container: {
+		backgroundColor: 'white',
+		flex: 1,
+	},
 	imageContainer:{ 
 		height: 150,
 		width: 150,
