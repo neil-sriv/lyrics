@@ -17,6 +17,8 @@ export default class Auth {
 			'playlist-modify-private',
 			'user-read-recently-played',
 			'user-top-read',
+			'user-read-email',
+			'user-read-private'
 		];
 		this._scopes = this.scopesArr.join(' ');
 	}
@@ -141,6 +143,7 @@ export default class Auth {
 				method: 'GET',
 				headers: { Authorization: 'Bearer ' + trimmedToken },
 			});
+			console.log(response.status)
 			if (response.status == 200){
 				const responseJson = await response.json();
 				await this.setUserData('user', responseJson)

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 
 export default class Profile extends React.Component {
 	constructor(props) {
@@ -16,44 +16,68 @@ export default class Profile extends React.Component {
 		const tracks = await this.auth.getUserData('tracks');
 		this.setState({
 			user: {
-				info: JSON.parse(user).display_name,
+				name: JSON.parse(user).display_name,
+				email: JSON.parse(user).email,
+				followers: JSON.parse(user).followers.total,
 				image_url: JSON.parse(user).images[0].url,
 				artists: [JSON.parse(artists).items[0].name, JSON.parse(artists).items[1].name, JSON.parse(artists).items[2].name],
 				tracks: [JSON.parse(tracks).items[0].name, JSON.parse(tracks).items[1].name, JSON.parse(tracks).items[2].name]
 			}
 		})
-		console.log(this.state.user.image_url)
+
+		console.log(this.state.user.artists[0])
 	}
 
 	render() {
 		return (
 			<View>
-
+				{this.state.user==null ? 'null' :
 				<View>
-					<Text>{this.state.user==null ? 'null' : this.state.user.info}</Text>
-				</View>
-				<View style={{
-					backgroundColor: 'black',
-					height: 150,
-					width: 150,
-					alignItems: 'center',
-					justifyContent: 'center',
-					borderColor: 'white',
-					borderWidth: 85,
-					borderRadius: 10,
-				}}>
 					<Image 
-						source={{ uri : `data:${this.state.image_url}` }}
-						style={{ height: 150, width: 150 }}
-					/>				
-				</View>
+						source={{ uri : this.state.user.image_url }}
+						style={styles.imageContainer}
+					/>						
 
-				<View>
-					<Text>{this.state.user==null ? 'null' : this.state.user.artists}</Text>
-					
-					<Text>{this.state.user==null ? 'null' : this.state.user.tracks}</Text>
+					<Text
+						style={{alignSelf: 'center',
+								fontSize: 24}}
+					>
+						{this.state.user.name}
+					</Text>
+					<Text
+						style={{alignSelf: 'center',
+								fontSize: 16}}
+					>
+						{this.state.user.email}
+					</Text>
+					<Text>{this.state.user.followers}</Text>
+					<Text>
+						<Text>
+							<Text>Top Artists</Text>
+							<Text>{this.state.user.artists}</Text>
+						</Text>	
+						<Text>
+							<Text>Top Tracks</Text>
+							{this.state.user.tracks}
+						</Text>						
+					</Text>
+
 				</View>
+				}
 			</View>
+
 		);
 	}
 }
+
+
+const styles = StyleSheet.create({
+	imageContainer:{ 
+		height: 150, 
+		width: 150, 
+		alignSelf: 'center',
+		borderRadius: 10,
+	}
+	,
+
+})
