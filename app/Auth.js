@@ -18,7 +18,7 @@ export default class Auth {
 			'user-read-recently-played',
 			'user-top-read',
 			'user-read-email',
-			'user-read-private'
+			'user-read-private',
 		];
 		this._scopes = this.scopesArr.join(' ');
 	}
@@ -87,9 +87,8 @@ export default class Auth {
 			var trimmedToken;
 			if (refreshToken) {
 				trimmedToken = refreshToken.substring(1, refreshToken.length - 1);
-			}
-			else {
-				trimmedToken = ''
+			} else {
+				trimmedToken = '';
 			}
 			const credsB64 = btoa(
 				`${spotifyCredentials.clientId}:${spotifyCredentials.clientSecret}`
@@ -122,6 +121,7 @@ export default class Auth {
 				if (newRefreshToken) {
 					await this.setUserData('refreshToken', newRefreshToken);
 				}
+				return 'success';
 			}
 		} catch (err) {
 			console.error(err);
@@ -136,9 +136,9 @@ export default class Auth {
 				method: 'GET',
 				headers: { Authorization: 'Bearer ' + trimmedToken },
 			});
-			if (response.status == 200){
+			if (response.status == 200) {
 				const responseJson = await response.json();
-				await this.setUserData('user', responseJson)
+				await this.setUserData('user', responseJson);
 				return responseJson;
 			}
 		} catch (err) {
@@ -150,13 +150,16 @@ export default class Auth {
 		try {
 			var accessToken = await this.getUserData('accessToken');
 			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
-			const response = await fetch('https://api.spotify.com/v1/me/top/artists?limit=3', {
-				method: 'GET',
-				headers: { Authorization: 'Bearer ' + trimmedToken },
-			});
-			if (response.status == 200){
+			const response = await fetch(
+				'https://api.spotify.com/v1/me/top/artists?limit=3',
+				{
+					method: 'GET',
+					headers: { Authorization: 'Bearer ' + trimmedToken },
+				}
+			);
+			if (response.status == 200) {
 				const responseJson = await response.json();
-				await this.setUserData('artists', responseJson)
+				await this.setUserData('artists', responseJson);
 				return responseJson;
 			}
 		} catch (err) {
@@ -168,13 +171,16 @@ export default class Auth {
 		try {
 			var accessToken = await this.getUserData('accessToken');
 			const trimmedToken = accessToken.substring(1, accessToken.length - 1);
-			const response = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=3', {
-				method: 'GET',
-				headers: { Authorization: 'Bearer ' + trimmedToken },
-			});
-			if (response.status == 200){
+			const response = await fetch(
+				'https://api.spotify.com/v1/me/top/tracks?limit=3',
+				{
+					method: 'GET',
+					headers: { Authorization: 'Bearer ' + trimmedToken },
+				}
+			);
+			if (response.status == 200) {
 				const responseJson = await response.json();
-				await this.setUserData('tracks', responseJson)
+				await this.setUserData('tracks', responseJson);
 				return responseJson;
 			}
 		} catch (err) {

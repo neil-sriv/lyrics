@@ -17,7 +17,7 @@ export default class Player extends React.Component {
 			style: { backgroundColor: 'white', textColor: 'rgb(0,0,0)' },
 			showSlider: false,
 			slider: 50,
-			lyrics: 'Searching for lyrics...',
+			lyrics: '',
 			remountKey: false,
 		};
 		this.props.navigation.setOptions({
