@@ -43,7 +43,7 @@ export default class Login extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<Button title="loginhere" onPress={this.login} />
+				<Button title="Login" onPress={this.login} />
 			</View>
 		);
 	}
@@ -82,17 +82,5 @@ const styles = StyleSheet.create({
 	playbackButton: {
 		alignItems: 'center',
 		padding: 10,
-	},
-	title: {
-		alignItems: 'flex-start',
-		color: 'white',
-		paddingLeft: 30,
-		fontSize: 40,
-	},
-	artist: {
-		alignItems: 'flex-start',
-		color: 'white',
-		paddingLeft: 30,
-		fontSize: 20,
 	},
 });
