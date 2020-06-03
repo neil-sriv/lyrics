@@ -17,6 +17,8 @@ export default class Auth {
 			'playlist-modify-private',
 			'user-read-recently-played',
 			'user-top-read',
+			'user-read-email',
+			'user-read-private'
 		];
 		this._scopes = this.scopesArr.join(' ');
 	}

@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 
 export default class Profile extends React.Component {
 	constructor(props) {
 		super(props);
+		this.props.navigation.setOptions({
+			headerShown: false,
+		})
 		this.auth = this.props.auth;
-		this.state = {
-			user: {},
-		};
+		this.state = {};
 	}
 	
 	async componentDidMount() {
@@ -28,32 +29,108 @@ export default class Profile extends React.Component {
 	render() {
 		return (
 			<View>
-
-				<View>
-					<Text>{this.state.user==null ? 'null' : this.state.user.info}</Text>
-				</View>
-				<View style={{
-					backgroundColor: 'black',
-					height: 150,
-					width: 150,
-					alignItems: 'center',
-					justifyContent: 'center',
-					borderColor: 'white',
-					borderWidth: 85,
-					borderRadius: 10,
-				}}>
-					<Image 
-						source={{ uri : `data:${this.state.image_url}` }}
-						style={{ height: 150, width: 150 }}
-					/>				
-				</View>
-
-				<View>
-					<Text>{this.state.user==null ? 'null' : this.state.user.artists}</Text>
+				{this.state.user==null ? <Text> </Text> :
+				<View
+					style={{alignItems: "center",marginTop: 100, }}
+				>
+					<View style={styles.imageContainer}>
+						<Image 
+							source={{ uri : this.state.user.image_url }}
+							style={{height: 150, width: 150, alignSelf: 'center'}}
+						/>							
+					</View>
 					
-					<Text>{this.state.user==null ? 'null' : this.state.user.tracks}</Text>
-				</View>
+
+					<Text
+						style={{ fontSize: 24, marginTop: 10, color: '#2AA7E7'}}
+					>
+						{this.state.user.name}
+					</Text>
+					<Text
+						style={{ fontSize: 16, }}
+					>
+						{this.state.user.email}
+					</Text>
+
+					<View
+						style={{
+						marginTop: 20, 
+						height: 319,
+						width: 319,
+						backgroundColor: 'white',
+						borderRadius: 15,
+						shadowColor: 'black',
+						shadowOpacity: 0.35,
+						shadowRadius: 10,
+						shadowOffset: { width: 0, height: 5 },
+					}}
+					>
+						{/* <Text>{this.state.user.followers}</Text>
+						<Text>Followers</Text> */}
+						<View
+							style={{display:"flex", flexDirection: "row", justifyContent: "space-evenly", marginTop: 20}}
+						>
+							<View>
+								<Text
+									style={styles.topHeading}
+								>Top Artists</Text>
+								<View
+									style={styles.topContainer}
+								>
+									<Text>{this.state.user.artists[0]}</Text>
+									<Text>{this.state.user.artists[1]}</Text>
+									<Text>{this.state.user.artists[2]}</Text>
+								</View>								
+							</View>
+							<View>
+								<Text
+									style={styles.topHeading}
+								>Top Tracks</Text>
+								<View
+									style={styles.topContainer}
+								>
+									<Text>{this.state.user.tracks[0]}</Text>
+									<Text>{this.state.user.tracks[1]}</Text>
+									<Text>{this.state.user.tracks[2]}</Text>
+								</View>		
+							</View>
+
+
+			
+						</View>
+
+					</View>
+
 			</View>
+		
+		}
+		</View> 
 		);
 	}
 }
+
+const styles = StyleSheet.create({
+	imageContainer:{ 
+		height: 150,
+		width: 150,
+		justifyContent: 'center',
+		borderColor: 'rgba(42, 167, 231, 0.1)',
+		borderWidth: 85,
+		borderRadius: 10,
+	}
+	,
+	topHeading:{
+		fontWeight: '600', 
+		fontSize: 24, 
+		marginBottom: 10, 
+		color: '#2AA7E7'
+	},
+	topContainer:{
+		display: "flex", 
+		flexDirection: "column", 
+		alignItems: "center", 
+		justifyContent: "space-evenly",
+		height: 80
+	}
+
+});
