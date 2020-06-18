@@ -393,6 +393,7 @@ export default class Player extends React.Component {
 						key={this.state.remountKey}
 						test={this.pause}
 						backgroundColor={this.state.style.backgroundColor}
+						duration={this.state.nowPlaying.duration}
 					/>
 				</View>
 				<View

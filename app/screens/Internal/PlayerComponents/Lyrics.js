@@ -11,9 +11,12 @@ export default class Lyrics extends React.Component {
 	flatList = React.createRef();
 	constructor(props) {
 		super(props);
+		var song_length = this.props.duration / 1000;
+		var words = this.props.lyrics.split(' ');
 		this.state = {
 			lyrics: this.props.lyrics,
-			offset: 0
+			offset: -50,
+			scrollVal: words.length / song_length,
 		};
 	}
 
@@ -28,9 +31,7 @@ export default class Lyrics extends React.Component {
 
 	_goToNextPage = () => {
 		this.flatList.current.scrollToOffset({ offset: this.state.offset });
-		this.setState(
-			{ offset: this.state.offset+2 }
-		)
+		this.setState({ offset: this.state.offset + this.state.scrollVal });
 	};
 
 	_startAutoPlay = () => {
@@ -46,36 +47,11 @@ export default class Lyrics extends React.Component {
 
 	render() {
 		return (
-			// <SafeAreaView style={styles.scrollView}>
-			// 	<ScrollView
-			// 		ref={(ref) => {
-			// 			this.scrollView = ref;
-			// 		}}
-			// 		onContentSizeChange={() =>
-			// 			this.scrollView.scrollTo({ x: 0, y: 0, animated: true })
-			// 		}
-			// 	>
-			// 		<Text
-			// 			style={{
-			// 				color: '#2AA7E7',
-			// 				fontSize: 20,
-			// 			}}
-			// 		>
-			// 			{this.state.lyrics}
-			// 		</Text>
-			// 	</ScrollView>
-			// </SafeAreaView>
 			<SafeAreaView style={styles.scrollView}>
 				<FlatList
-					flatListRef={React.createRef()}
+					// flatListRef={React.createRef()}
 					ref={this.flatList}
 					data={[{ id: 1, text: this.state.lyrics }]}
-					// onContentSizeChange={() =>
-					// 	this.flatList.current.scrollToOffset({
-					// 		offset: 100,
-					// 		animated: true,
-					// 	})
-					// }
 					renderItem={({ item }) => (
 						<Text
 							style={{
@@ -94,12 +70,10 @@ export default class Lyrics extends React.Component {
 
 const styles = StyleSheet.create({
 	scrollView: {
-		// marginHorizontal: 10,
 		marginTop: 10,
 		height: 300,
 		width: 319,
 		position: 'relative',
-		// backgroundColor: (42, 167, 231, 0.1)
 		backgroundColor: 'white',
 		borderColor: 'white',
 		borderWidth: 10,
