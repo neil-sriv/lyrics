@@ -5,6 +5,7 @@ import {
 	Text,
 	StyleSheet,
 	FlatList,
+	TouchableWithoutFeedback,
 } from 'react-native';
 
 export default class Lyrics extends React.Component {
@@ -50,17 +51,29 @@ export default class Lyrics extends React.Component {
 			<SafeAreaView style={styles.scrollView}>
 				<FlatList
 					// flatListRef={React.createRef()}
+					onScrollBeginDrag={() => {
+						this._stopAutoPlay();
+					}}
+					onScrollEndDrag={() => {
+						var offset = this.flatList.current._listRef._scrollMetrics.offset;
+						this.flatList.current.scrollToOffset({ offset: offset });
+						this.setState({ offset: offset + this.state.scrollVal });
+						this._startAutoPlay();
+					}}
+					onMomentumScrollEnd={() => {}}
 					ref={this.flatList}
 					data={[{ id: 1, text: this.state.lyrics }]}
 					renderItem={({ item }) => (
+						// <TouchableWithoutFeedback onPressIn={() => alert('Pressed!')}>
 						<Text
 							style={{
 								color: '#2AA7E7',
 								fontSize: 20,
 							}}
 						>
-							{this.state.lyrics}
+							{item.text}
 						</Text>
+						// </TouchableWithoutFeedback>
 					)}
 				/>
 			</SafeAreaView>
