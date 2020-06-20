@@ -9,7 +9,6 @@ import {
 	StatusBar,
 } from 'react-native';
 import cheerio from 'react-native-cheerio';
-import VerticalSlider from 'rn-vertical-slider';
 import Lyrics from './PlayerComponents/Lyrics';
 import Controls from './PlayerComponents/Controls';
 import { Feather } from '@expo/vector-icons';
@@ -79,7 +78,9 @@ export default class Player extends React.Component {
 	}
 
 	goToProfile = () => {
-		this.props.navigation.navigate('Profile');
+		this.props.navigation.navigate('Profile', {
+			test: this.refresh,
+		});
 	};
 
 	refresh = async () => {
@@ -309,76 +310,6 @@ export default class Player extends React.Component {
 							source={{ uri: this.state.nowPlaying.album_art }}
 							style={{ height: 150, width: 150 }}
 						/>
-					</View>
-					<View
-						style={{
-							paddingHorizontal: 10,
-							backgroundColor: this.state.style.backgroundColor,
-							marginLeft: 300,
-						}}
-					>
-						{this.state.showSlider ? (
-							<View
-								style={{
-									flexDirection: 'row',
-									alignItems: 'center',
-									justifyContent: 'center',
-									backgroundColor: this.state.style.backgroundColor,
-								}}
-							>
-								<VerticalSlider
-									style={{
-										display: 'none',
-									}}
-									value={this.state.slider}
-									disabled={false}
-									min={0}
-									max={100}
-									onChange={(value) => {
-										this.setState({
-											style: {
-												backgroundColor: `rgb(${
-													Math.sin(0.06 * value + 0) * 100 + 215
-												}, ${Math.sin(0.06 * value + 2) * 100 + 215}, ${
-													Math.sin(0.06 * value + 4) * 100 + 215
-												})`,
-											},
-											slider: value,
-										});
-									}}
-									onComplete={(value) => {
-										// console.log('COMPLETE', value);
-									}}
-									width={30}
-									height={200}
-									step={1}
-									borderRadius={100}
-									borderColor={'red'}
-									minimumTrackTintColor={'rgb(255, 100, 100)'}
-									maximumTrackTintColor={'rgb(155, 200, 300)'}
-								/>
-								<Button
-									title="Hide"
-									onPress={() =>
-										this.setState({
-											showSlider: false,
-										})
-									}
-								/>
-							</View>
-						) : (
-							<Button
-								style={{
-									paddingLeft: 100,
-								}}
-								title="0"
-								onPress={() =>
-									this.setState({
-										showSlider: true,
-									})
-								}
-							/>
-						)}
 					</View>
 				</View>
 
