@@ -1,5 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, Alert } from 'react-native';
+import {
+	StyleSheet,
+	Text,
+	View,
+	Button,
+	Image,
+	Alert,
+	StatusBar,
+} from 'react-native';
 import cheerio from 'react-native-cheerio';
 import VerticalSlider from 'rn-vertical-slider';
 import Lyrics from './PlayerComponents/Lyrics';
@@ -115,7 +123,6 @@ export default class Player extends React.Component {
 			// console.log(this.state.paused)
 			setTimeout(
 				function () {
-					// console.log('i think it is end of song')
 					this.refresh();
 				}.bind(this),
 				seconds + 1000
@@ -280,6 +287,7 @@ export default class Player extends React.Component {
 					// paddingTop: Platform.OS == 'ios' ? 40 : 0,
 				}}
 			>
+				<StatusBar barStyle={'dark-content'} />
 				<View
 					title="Margin"
 					style={{

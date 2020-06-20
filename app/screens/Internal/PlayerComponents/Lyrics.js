@@ -17,7 +17,7 @@ export default class Lyrics extends React.Component {
 		this.state = {
 			lyrics: this.props.lyrics,
 			offset: -50,
-			scrollVal: words.length / song_length,
+			scrollVal: words.length / (song_length - 100),
 		};
 	}
 
